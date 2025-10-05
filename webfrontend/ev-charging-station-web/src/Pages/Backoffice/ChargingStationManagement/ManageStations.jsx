@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Filter } from 'lucide-react';
-import { useChargingStations } from '../hooks/useChargingStations';
-import ChargingStationCard from '../components/ChargingStationCard';
+import { useChargingStations } from '../../../hooks/useChargingStations';
+import ChargingStationCard from '../../../Components/ChargingStation/ChargingStationCard';
 
 const ManageStations = () => {
   const { 

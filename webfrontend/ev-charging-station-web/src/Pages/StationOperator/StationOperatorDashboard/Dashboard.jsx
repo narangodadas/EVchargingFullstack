@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Power, Activity, AlertTriangle } from 'lucide-react';
-import { useChargingStations } from '../hooks/useChargingStations';
-import ChargingStationCard from '../components/ChargingStationCard';
+import { useChargingStations } from '../../../hooks/useChargingStations';
+import ChargingStationCard from '../../../Components/ChargingStation/ChargingStationCard';
 
 const Dashboard = () => {
   const { 

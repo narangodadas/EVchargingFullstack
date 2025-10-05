@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import ChargingStationForm from '../components/ChargingStationForm';
-import { useChargingStations } from '../hooks/useChargingStations';
-import apiService from '../services/api';
+import ChargingStationForm from '../../../Components/ChargingStation/ChargingStationForm';
+import { useChargingStations } from '../../../hooks/useChargingStations';
+import apiService from '../../../services/api';
 
 const EditStation = () => {
   const { id } = useParams();
