@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EVChargingStationWeb.Server", "EVChargingStationWeb.Server.csproj", "{CCCF24E6-0253-4122-879A-D9D4653C746A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CCCF24E6-0253-4122-879A-D9D4653C746A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCCF24E6-0253-4122-879A-D9D4653C746A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCCF24E6-0253-4122-879A-D9D4653C746A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCCF24E6-0253-4122-879A-D9D4653C746A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {26EEB711-33CC-47EA-9DC4-BD2AD07FEB0A}
+	EndGlobalSection
+EndGlobal
