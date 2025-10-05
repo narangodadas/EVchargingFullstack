@@ -1,16 +1,16 @@
 // src/pages/BackofficeDashboard.jsx
 import React, { useState, useEffect } from "react";
-import EVOwnerSearch from "../Components/EVOwner/EVOwnerSearch";
-import EVOwnerList from "../Components/EVOwner/EVOwnerList";
-import EVOwnerForm from "../Components/EVOwner/EVOwnerForm";
+import EVOwnerSearch from "../../../Components/EVOwner/EVOwnerSearch";
+import EVOwnerList from "../../../Components/EVOwner/EVOwnerList";
+import EVOwnerForm from "../../../Components/EVOwner/EVOwnerForm";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://localhost:7014/api/evowners",
+  baseURL: "http://localhost:5296/api/evowners",
   headers: { "Content-Type": "application/json" },
 });
 
-export default function BackofficeDashboard() {
+export default function EVOwnerManagement() {
   const [owners, setOwners] = useState([]);
   const [editingOwner, setEditingOwner] = useState(null);
 
@@ -72,6 +72,13 @@ export default function BackofficeDashboard() {
 
       <EVOwnerSearch onSearch={handleSearch} />
 
+      <button
+        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        onClick={() => setEditingOwner({})}
+      >
+        + Create New Owner
+      </button>
+
       {editingOwner || !owners.length ? (
         <EVOwnerForm initialData={editingOwner} onSave={handleSave} onCancel={() => setEditingOwner(null)} />
       ) : null}
@@ -83,6 +90,8 @@ export default function BackofficeDashboard() {
         onDeactivate={handleDeactivate}
         onDelete={handleDelete}
       />
+
+      
     </div>
   );
 }

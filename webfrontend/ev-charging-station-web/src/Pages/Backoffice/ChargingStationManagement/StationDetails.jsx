@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, MapPin, Zap, Power, Edit, Calendar } from 'lucide-react';
-import apiService from '../services/api';
+import apiService from '../../../services/api';
 
 const StationDetails = () => {
   const { id } = useParams();
