@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "5fPYpPE8Gpnrr78CEtVDr8t0bGAroWDVfrVmkDwhNL4=",
+  "Source": "EVChargingAPI",
+  "BasePath": "_content/EVChargingAPI",
+  "Mode": "Default",
+  "ManifestType": "Publish",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
