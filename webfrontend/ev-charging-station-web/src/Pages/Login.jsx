@@ -1,99 +1,77 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
+import { Power } from 'lucide-react';
 
-export default function LoginPage() {
-  const [nic, setNic] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+const Login = () => {
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
 
-  const handleLogin = async (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Basic validation
-    if (!nic || !password) {
-      setError("NIC and Password are required");
-      return;
-    }
-
-    try {
-      // Call backend API
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
-        nic,
-        password,
-      });
-
-      // Example response: { token, role }
-      const { token, role } = res.data;
-
-      // Save to localStorage
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", role);
-
-      // Redirect based on role
-      if (role === "Backoffice") {
-        window.location.href = "/admin-dashboard";
-      } else if (role === "Operator") {
-        window.location.href = "/operator-dashboard";
-      } else {
-        setError("Unknown role. Contact admin.");
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Invalid credentials. Please try again.");
-    }
+    // Handle login logic here
+    console.log('Login attempt:', formData);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-8">
-        <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">
-          EV Charging System Login
-        </h1>
-
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm">
-            {error}
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6">
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <Power className="h-12 w-12 text-primary-600" />
           </div>
-        )}
+          <h2 className="text-2xl font-bold text-gray-900">EV Station Manager</h2>
+          <p className="text-gray-600">Sign in to your account</p>
+        </div>
 
-        <form onSubmit={handleLogin} className="space-y-5">
-          {/* NIC Field */}
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-1">
-              NIC
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              Username
             </label>
             <input
               type="text"
-              value={nic}
-              onChange={(e) => setNic(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-              placeholder="Enter your NIC"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder="Enter your username"
+              required
             />
           </div>
 
-          {/* Password Field */}
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-1">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
             </label>
             <input
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
               placeholder="Enter your password"
+              required
             />
           </div>
 
-          {/* Login Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200"
+            className="w-full bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
-            Login
+            Sign In
           </button>
         </form>
       </div>
     </div>
   );
-}
+};
+
+export default Login;
