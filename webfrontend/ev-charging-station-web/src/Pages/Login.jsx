@@ -1,21 +1,50 @@
-import React, { useState } from 'react';
-import { Power } from 'lucide-react';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Power } from "lucide-react";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-  });
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Login attempt:', formData);
+    setError("");
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/api/auth/login`,
+        formData
+      );
+
+      const { token, role } = response.data;
+
+      // Store JWT in localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
+
+      // Navigate based on role
+      if (role === "Backoffice") {
+        navigate("/backoffice/dashboard");
+      } else if (role === "StationOperator") {
+        navigate("/station/dashboard");
+      } else {
+        setError("Unknown user role");
+      }
+    } catch (err) {
+      console.error(err);
+      if (err.response) {
+        setError(err.response.data.message || "Login failed");
+      } else {
+        setError("Network error");
+      }
+    }
   };
 
   return (
@@ -29,9 +58,18 @@ const Login = () => {
           <p className="text-gray-600">Sign in to your account</p>
         </div>
 
+        {error && (
+          <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-700"
+            >
               Username
             </label>
             <input
@@ -47,7 +85,10 @@ const Login = () => {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Password
             </label>
             <input

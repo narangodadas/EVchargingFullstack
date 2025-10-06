@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import ChargingStationForm from '../components/ChargingStationForm';
-import { useChargingStations } from '../hooks/useChargingStations';
+import ChargingStationForm from '../../../Components/ChargingStation/ChargingStationForm';
+import { useChargingStations } from '../../../hooks/useChargingStations';
 
 const CreateStation = () => {
   const navigate = useNavigate();

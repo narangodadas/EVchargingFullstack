@@ -4,32 +4,48 @@ using System;
 
 namespace EVChargingStationWeb.Server.Models
 {
-    public enum BookingStatus
-    {
-        Active,
-        Cancelled,
-        Completed
-    }
-
     public class Booking
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public string? Id { get; set; }
+
+        [BsonElement("userId")]
+        public string UserId { get; set; }
 
         [BsonElement("stationId")]
         public string StationId { get; set; }
 
-        [BsonElement("userId")]
-        public string UserId { get; set; }  // NIC of EV owner or user id
+        [BsonElement("bookingDate")]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+        public DateTime BookingDate { get; set; }
 
-        [BsonElement("reservationDate")]
-        public DateTime ReservationDate { get; set; } // store in UTC
+        [BsonElement("startTime")]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+        public DateTime StartTime { get; set; }
+
+        [BsonElement("endTime")]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+        public DateTime EndTime { get; set; }
 
         [BsonElement("status")]
-        public BookingStatus Status { get; set; } = BookingStatus.Active;
+        public string Status { get; set; }
+
+        [BsonElement("vehicleType")]
+        public string VehicleType { get; set; }
+
+        [BsonElement("totalCost")]
+        public decimal TotalCost { get; set; }
+
+        [BsonElement("qrCodeData")]
+        public string QrCodeData { get; set; }
 
         [BsonElement("createdAt")]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        [BsonElement("updatedAt")]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }
