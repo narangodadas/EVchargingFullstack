@@ -20,6 +20,12 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
 // Register EVOwnerService
 builder.Services.AddSingleton<EVOwnerService>();
 
+// after registering IMongoClient and MongoDbSettings
+builder.Services.AddSingleton<BookingService>();
+
+// existing AddControllers(), AddCors(), etc.
+
+
 // Add services to the container.
 
 builder.Services.AddControllers();
