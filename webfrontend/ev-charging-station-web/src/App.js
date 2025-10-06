@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-
+import ProtectedRoute from './Components/ProtectedRoute';
 
 
 
@@ -31,7 +31,7 @@ import ManageStations from './Pages/Backoffice/ChargingStationManagement/ManageS
 
 //Shenori's Routes (Import here)
 import EVOwnerManagement from './Pages/Backoffice/EVOwnerManagement/EVOwnerManagement';
-
+import BookingPage from './Pages/Booking/BookingPage';
 
 
 
@@ -84,11 +84,7 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-100">
-        {isAuthenticated ? (
-          <>
             <Navigation />
-            <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
               <Routes>
                 {/*Nipun's Routes - starts at 94*/}
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -112,8 +108,16 @@ function App() {
 
 
                 {/*Shenori's Routes - starts at 115*/}
-                <Route path="/ev-owner-management" element={<EVOwnerManagement />} />
-
+                <Route path="/ev-owner-management" element={
+                  <ProtectedRoute allowedRoles={["Backoffice", "StationOperator"]}>
+                    <EVOwnerManagement />
+                  </ProtectedRoute>
+                } />
+                <Route path="/bookings" element={
+                  <ProtectedRoute allowedRoles={["Backoffice", "StationOperator"]}>
+                    <BookingPage />
+                  </ProtectedRoute>
+                } />
 
 
 
@@ -138,7 +142,7 @@ function App() {
 
                 
                 {/*Public Routes - starts at 140*/}
-
+                <Route path="/login" element={<Login />} />
 
 
 
@@ -152,15 +156,6 @@ function App() {
 
 
               </Routes>
-            </main>
-          </>
-        ) : (
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </Routes>
-        )}
-      </div>
     </Router>
   );
 }
