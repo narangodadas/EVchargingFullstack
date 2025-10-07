@@ -2,3 +2,8 @@ node_modules/
 /backend/web/EVOwnerService/.vs
 /backend/web/EVOwnerService/bin/Debug/net8.0
 /backend/web/EVOwnerService/obj/Debug/net8.0
+/backend/web/EVOwnerService/obj/EVChargingStationWeb.Server.csproj.nuget.dgspec.json
+/backend/web/EVOwnerService/Controllers/ChargingStationsController.cs
+/backend/web/EVOwnerService/Models
+/backend/web/EVOwnerService/Filters
+/backend/web/EVOwnerService/Services
