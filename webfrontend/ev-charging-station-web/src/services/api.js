@@ -1,4 +1,5 @@
-const API_BASE_URL = 'http://localhost:5000/api'; // Replace with your actual API URL
+// Determine API base URL based on environment
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5296/api';
 
 class ApiService {
     async request(endpoint, options = {}) {
@@ -16,13 +17,32 @@ class ApiService {
         }
 
         try {
+            console.log('API Request:', config.method || 'GET', url, config.body ? JSON.parse(config.body) : 'No body');
             const response = await fetch(url, config);
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorText = await response.text();
+                console.error('API Error Response:', response.status, errorText);
+
+                let errorData;
+                try {
+                    errorData = JSON.parse(errorText);
+                } catch {
+                    errorData = { message: errorText };
+                }
+
+                const errorMessage = errorData?.message || errorData?.errors || errorText || `HTTP error! status: ${response.status}`;
+                throw new Error(typeof errorMessage === 'object' ? JSON.stringify(errorMessage) : errorMessage);
             }
 
-            return await response.json();
+            // Handle no content responses
+            if (response.status === 204) {
+                return null;
+            }
+
+            const result = await response.json();
+            console.log('API Response:', result);
+            return result;
         } catch (error) {
             console.error('API request failed:', error);
             throw error;
@@ -30,43 +50,70 @@ class ApiService {
     }
 
     // Charging Station API methods
-    async getChargingStations() {
-        return this.request('/charging-stations');
+    async getChargingStations(status = null, type = null) {
+        const params = new URLSearchParams();
+        if (status) params.append('status', status);
+        if (type) params.append('type', type);
+
+        const queryString = params.toString();
+        return this.request(`/chargingstations${queryString ? `?${queryString}` : ''}`);
     }
 
     async getChargingStationById(id) {
-        return this.request(`/charging-stations/${id}`);
+        return this.request(`/chargingstations/${id}`);
+    }
+
+    async getChargingStationsByOperator(operatorId) {
+        return this.request(`/chargingstations/operator/${operatorId}`);
+    }
+
+    async getNearbyChargingStations(latitude, longitude, radius = 10) {
+        return this.request(`/chargingstations/nearby?latitude=${latitude}&longitude=${longitude}&radius=${radius}`);
     }
 
     async createChargingStation(stationData) {
-        return this.request('/charging-stations', {
+        return this.request('/chargingstations', {
             method: 'POST',
             body: stationData,
         });
     }
 
     async updateChargingStation(id, stationData) {
-        return this.request(`/charging-stations/${id}`, {
+        await this.request(`/chargingstations/${id}`, {
             method: 'PUT',
             body: stationData,
         });
+        // Return updated station
+        return this.getChargingStationById(id);
     }
 
     async deactivateChargingStation(id) {
-        return this.request(`/charging-stations/${id}/deactivate`, {
+        return this.request(`/chargingstations/${id}/deactivate`, {
             method: 'PATCH',
         });
     }
 
     async activateChargingStation(id) {
-        return this.request(`/charging-stations/${id}/activate`, {
+        return this.request(`/chargingstations/${id}/activate`, {
             method: 'PATCH',
         });
     }
 
-    async checkActiveBookings(stationId) {
-        return this.request(`/charging-stations/${stationId}/active-bookings`);
+    async updateAvailableSlots(id) {
+        return this.request(`/chargingstations/${id}/update-slots`, {
+            method: 'PATCH',
+        });
+    }
+
+    // Booking API methods (if needed for checking active bookings)
+    async getBookingsByStation(stationId) {
+        return this.request(`/booking/station/${stationId}`);
+    }
+
+    async getActiveBookingsByStation(stationId) {
+        return this.request(`/booking/station/${stationId}/active`);
     }
 }
 
-export default new ApiService();
+const apiService = new ApiService();
+export default apiService;
