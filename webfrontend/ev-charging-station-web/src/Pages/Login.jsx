@@ -31,9 +31,9 @@ const Login = () => {
 
       // Navigate based on role
       if (role === "Backoffice") {
-        navigate("/backoffice/dashboard");
+        navigate("/ev-owner-management");
       } else if (role === "StationOperator") {
-        navigate("/station/dashboard");
+        navigate("/dashboard");
       } else {
         setError("Unknown user role");
       }
