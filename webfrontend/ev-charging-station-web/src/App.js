@@ -32,7 +32,7 @@ import ManageStations from './Pages/Backoffice/ChargingStationManagement/ManageS
 //Shenori's Routes (Import here)
 import EVOwnerManagement from './Pages/Backoffice/EVOwnerManagement/EVOwnerManagement';
 import BookingPage from './Pages/Booking/BookingPage';
-
+import BackofficeDashboard from './Pages/Backoffice/BackOfficeDashboard';
 
 
 
@@ -116,6 +116,11 @@ function App() {
                 <Route path="/bookings" element={
                   <ProtectedRoute allowedRoles={["Backoffice", "StationOperator"]}>
                     <BookingPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/backoffice-dashboard" element={
+                  <ProtectedRoute allowedRoles={["Backoffice", "StationOperator"]}>
+                    <BackofficeDashboard />
                   </ProtectedRoute>
                 } />
 
