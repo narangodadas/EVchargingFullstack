@@ -83,10 +83,8 @@ namespace EVChargingStationWeb.Server.Services
             if (request.TotalSlots.HasValue)
             {
                 updates.Add(updateBuilder.Set(s => s.TotalSlots, request.TotalSlots.Value));
-                // Update available slots based on current bookings
-                var activeBookings = await GetActiveBookingsCountAsync(id);
-                var newAvailableSlots = Math.Max(0, request.TotalSlots.Value - activeBookings);
-                updates.Add(updateBuilder.Set(s => s.AvailableSlots, newAvailableSlots));
+                // Recalculate available slots based on active bookings
+                await UpdateAvailableSlotsAsync(id);
             }
             
             if (request.OperatingHours != null)
@@ -110,26 +108,6 @@ namespace EVChargingStationWeb.Server.Services
             }
         }
 
-        public async Task DeactivateAsync(string id)
-        {
-            // Check if there are active bookings
-            var activeBookingsCount = await GetActiveBookingsCountAsync(id);
-            if (activeBookingsCount > 0)
-            {
-                throw new InvalidOperationException(
-                    $"Cannot deactivate station. There are {activeBookingsCount} active bookings.");
-            }
-
-            var result = await _stations.UpdateOneAsync(
-                s => s.Id == id,
-                Builders<ChargingStation>.Update
-                    .Set(s => s.Status, StationStatus.Inactive)
-                    .Set(s => s.UpdatedAt, DateTime.UtcNow));
-            
-            if (result.MatchedCount == 0)
-                throw new KeyNotFoundException("Charging station not found");
-        }
-
         public async Task ActivateAsync(string id)
         {
             var result = await _stations.UpdateOneAsync(
@@ -142,40 +120,67 @@ namespace EVChargingStationWeb.Server.Services
                 throw new KeyNotFoundException("Charging station not found");
         }
 
+        public async Task DeactivateAsync(string id)
+        {
+            // Check if there are active bookings for this station
+            var activeBookingsCount = await GetActiveBookingsCountAsync(id);
+            if (activeBookingsCount > 0)
+            {
+                throw new InvalidOperationException($"Cannot deactivate station with {activeBookingsCount} active bookings");
+            }
+
+            var result = await _stations.UpdateOneAsync(
+                s => s.Id == id,
+                Builders<ChargingStation>.Update
+                    .Set(s => s.Status, StationStatus.Inactive)
+                    .Set(s => s.UpdatedAt, DateTime.UtcNow));
+            
+            if (result.MatchedCount == 0)
+                throw new KeyNotFoundException("Charging station not found");
+        }
+
         public async Task UpdateAvailableSlotsAsync(string stationId)
         {
-            var activeBookingsCount = await GetActiveBookingsCountAsync(stationId);
             var station = await GetByIdAsync(stationId);
-            
-            if (station != null)
-            {
-                var availableSlots = Math.Max(0, station.TotalSlots - activeBookingsCount);
-                await _stations.UpdateOneAsync(
-                    s => s.Id == stationId,
-                    Builders<ChargingStation>.Update
-                        .Set(s => s.AvailableSlots, availableSlots)
-                        .Set(s => s.UpdatedAt, DateTime.UtcNow));
-            }
+            if (station == null) return;
+
+            var activeBookingsCount = await GetActiveBookingsCountAsync(stationId);
+            var availableSlots = Math.Max(0, station.TotalSlots - activeBookingsCount);
+
+            await _stations.UpdateOneAsync(
+                s => s.Id == stationId,
+                Builders<ChargingStation>.Update
+                    .Set(s => s.AvailableSlots, availableSlots)
+                    .Set(s => s.UpdatedAt, DateTime.UtcNow));
         }
 
         public async Task<List<ChargingStation>> GetNearbyStationsAsync(double latitude, double longitude, double radiusKm = 10)
         {
-            // Simple distance calculation - in production, use MongoDB geospatial queries
-            var stations = await _stations.Find(s => s.Status == StationStatus.Active).ToListAsync();
+            var allStations = await _stations.Find(s => s.Status == StationStatus.Active).ToListAsync();
             
-            return stations.Where(s => CalculateDistance(
-                latitude, longitude, 
-                s.Location.Latitude, s.Location.Longitude) <= radiusKm)
-                .OrderBy(s => CalculateDistance(latitude, longitude, s.Location.Latitude, s.Location.Longitude))
-                .ToList();
+            var nearbyStations = allStations.Where(station =>
+            {
+                var distance = CalculateDistance(latitude, longitude, 
+                    station.Location.Latitude, station.Location.Longitude);
+                return distance <= radiusKm;
+            }).ToList();
+
+            return nearbyStations;
         }
 
         private async Task<int> GetActiveBookingsCountAsync(string stationId)
         {
-            var filter = Builders<Booking>.Filter.Eq(b => b.StationId, stationId) &
-                        Builders<Booking>.Filter.Eq(b => b.Status, BookingStatus.Active);
-            
-            return (int)await _bookings.CountDocumentsAsync(filter);
+            var now = DateTime.UtcNow;
+            // Use string values for status since BookingStatus enum is not defined in the provided context
+            var activeStatuses = new[] { "confirmed", "in-progress" };
+
+            var count = await _bookings.CountDocumentsAsync(b =>
+                b.StationId == stationId &&
+                activeStatuses.Contains(b.Status) &&
+                b.StartTime <= now &&
+                b.EndTime >= now);
+
+            return (int)count;
         }
 
         private double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
@@ -192,7 +197,7 @@ namespace EVChargingStationWeb.Server.Services
 
         private double ToRadians(double degrees)
         {
-            return degrees * Math.PI / 180;
+            return degrees * (Math.PI / 180);
         }
     }
 }
