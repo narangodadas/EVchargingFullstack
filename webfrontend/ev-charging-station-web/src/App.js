@@ -87,7 +87,7 @@ function App() {
             <Navigation />
               <Routes>
                 {/*Nipun's Routes - starts at 94*/}
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path="/" element={<Navigate to="/login" replace />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/create-station" element={<CreateStation />} />
                 <Route path="/edit-station/:id" element={<EditStation />} />

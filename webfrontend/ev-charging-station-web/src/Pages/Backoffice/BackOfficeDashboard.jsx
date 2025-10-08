@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Zap, Power, MapPin, Clock, Users, CreditCard, RefreshCw } from 'lucide-react';
 import axios from 'axios';
+import Sidebar from '../../Components/Layout/Sidebar';
 
 const BackofficeDashboard = () => {
   const [stats, setStats] = useState({
@@ -76,7 +77,10 @@ const BackofficeDashboard = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="flex min-h-screen bg-gray-50">
+      {/* Sidebar */}
+      <Sidebar />
+    <div className="flex-1 p-6 space-y-6 transition-all">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -147,6 +151,7 @@ const BackofficeDashboard = () => {
       </div>
 
       {/* Optional: Table or chart for bookings per station */}
+    </div>
     </div>
   );
 };
