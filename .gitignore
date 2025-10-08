@@ -1,4 +1,5 @@
 node_modules/
+<<<<<<< Updated upstream
 /backend/web/EVOwnerService/.vs
 /backend/web/EVOwnerService/bin/Debug/net8.0
 /backend/web/EVOwnerService/obj/Debug/net8.0
@@ -7,3 +8,7 @@ node_modules/
 /backend/web/EVOwnerService/Models
 /backend/web/EVOwnerService/Filters
 /backend/web/EVOwnerService/Services
+=======
+/backend/web/EVOwnerService
+/backend/web/EVOwnerService.zip
+>>>>>>> Stashed changes
