@@ -3,6 +3,7 @@ import { Search, Filter, Plus, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useChargingStations } from '../../../hooks/useChargingStations';
 import ChargingStationCard from '../../../Components/ChargingStation/ChargingStationCard';
+import Sidebar from '../../../Components/Layout/Sidebar';
 
 const ManageStations = () => {
   const { 
@@ -42,6 +43,7 @@ const ManageStations = () => {
 
   if (error) {
     return (
+      
       <div className="space-y-4">
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
           <div className="flex justify-between items-center">
@@ -55,6 +57,7 @@ const ManageStations = () => {
           </div>
         </div>
       </div>
+
     );
   }
 
@@ -82,6 +85,10 @@ const ManageStations = () => {
   });
 
   return (
+    <div className="flex min-h-screen bg-gray-50">
+      {/* Sidebar */}
+      <Sidebar />
+      <div className="flex-1 p-6 space-y-6 transition-all">
     <div className="space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
@@ -213,6 +220,7 @@ const ManageStations = () => {
         )}
       </div>
     </div>
+    </div></div>
   );
 };
 

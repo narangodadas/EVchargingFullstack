@@ -31,7 +31,7 @@ const Login = () => {
 
       // Navigate based on role
       if (role === "Backoffice") {
-        navigate("/ev-owner-management");
+        navigate("/backoffice-dashboard");
       } else if (role === "StationOperator") {
         navigate("/dashboard");
       } else {

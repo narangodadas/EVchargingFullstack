@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import EVOwnerSearch from "../../../Components/EVOwner/EVOwnerSearch";
 import EVOwnerList from "../../../Components/EVOwner/EVOwnerList";
 import EVOwnerForm from "../../../Components/EVOwner/EVOwnerForm";
+import Sidebar from "../../../Components/Layout/Sidebar";
 import axios from "axios";
 
 const api = axios.create({
@@ -67,6 +68,10 @@ export default function EVOwnerManagement() {
   }, []);
 
   return (
+    <div className="flex min-h-screen bg-gray-50">
+      {/* Sidebar */}
+      <Sidebar />
+      <div className="flex-1 p-6 space-y-6 transition-all">
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">EV Owner Management</h1>
 
@@ -92,6 +97,8 @@ export default function EVOwnerManagement() {
       />
 
       
+    </div>
+    </div>
     </div>
   );
 }
