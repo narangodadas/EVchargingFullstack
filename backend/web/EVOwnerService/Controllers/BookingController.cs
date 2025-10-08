@@ -1,5 +1,6 @@
 using EVChargingStationWeb.Server.Models;
 using EVChargingStationWeb.Server.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ namespace EVChargingStationWeb.Server.Controllers
 {
     [ApiController]
     [Route("api/bookings")]
+    [Authorize(Roles = "Backoffice")]
     public class BookingsController : ControllerBase
     {
         private readonly BookingService _service;

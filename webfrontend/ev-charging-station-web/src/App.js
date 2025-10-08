@@ -7,11 +7,11 @@ import ProtectedRoute from './Components/ProtectedRoute';
 
 //Nipun's Routes (Import here)
 import Navigation from './Components/ChargingStation/Navigation';
-import Dashboard from './pages/StationOperator/StationOperatorDashboard/Dashboard';
-import CreateStation from './pages/Backoffice/ChargingStationManagement/CreateStation';
-import EditStation from './pages/Backoffice/ChargingStationManagement/EditStation';
-import StationDetails from './pages/Backoffice/ChargingStationManagement/StationDetails';
-import ManageStations from './pages/Backoffice/ChargingStationManagement/ManageStations';
+import Dashboard from './Pages/StationOperator/StationOperatorDashboard/Dashboard';
+import CreateStation from './Pages/Backoffice/ChargingStationManagement/CreateStation';
+import EditStation from './Pages/Backoffice/ChargingStationManagement/EditStation';
+import StationDetails from './Pages/Backoffice/ChargingStationManagement/StationDetails';
+import ManageStations from './Pages/Backoffice/ChargingStationManagement/ManageStations';
 
 
 
@@ -30,9 +30,9 @@ import ManageStations from './pages/Backoffice/ChargingStationManagement/ManageS
 
 
 //Shenori's Routes (Import here)
-import EVOwnerManagement from './pages/Backoffice/EVOwnerManagement/EVOwnerManagement';
-import BookingPage from './pages/Booking/BookingPage';
-
+import EVOwnerManagement from './Pages/Backoffice/EVOwnerManagement/EVOwnerManagement';
+import BookingPage from './Pages/Booking/BookingPage';
+import BackofficeDashboard from './Pages/Backoffice/BackOfficeDashboard';
 
 
 
@@ -64,7 +64,7 @@ import BookingPage from './pages/Booking/BookingPage';
 
 
 //Public Routes (Import here) 
-import Login from './pages/Login';
+import Login from './Pages/Login';
 
 
 
@@ -80,19 +80,19 @@ import Login from './pages/Login';
 
 
 function App() {
-  // const isAuthenticated = true; // Replace with actual authentication logic when needed
+  const isAuthenticated = true; // Replace with actual authentication logic
 
   return (
     <Router>
-      <Navigation />
-      <Routes>
-        {/*Nipun's Routes - starts at 94*/}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/create-station" element={<CreateStation />} />
-        <Route path="/edit-station/:id" element={<EditStation />} />
-        <Route path="/station/:id" element={<StationDetails />} />
-        <Route path="/manage-stations" element={<ManageStations />} />
+            <Navigation />
+              <Routes>
+                {/*Nipun's Routes - starts at 94*/}
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/create-station" element={<CreateStation />} />
+                <Route path="/edit-station/:id" element={<EditStation />} />
+                <Route path="/station/:id" element={<StationDetails />} />
+                <Route path="/manage-stations" element={<ManageStations />} />
 
 
 
@@ -107,17 +107,22 @@ function App() {
 
 
 
-        {/*Shenori's Routes - starts at 115*/}
-        <Route path="/ev-owner-management" element={
-          <ProtectedRoute allowedRoles={["Backoffice", "StationOperator"]}>
-            <EVOwnerManagement />
-          </ProtectedRoute>
-        } />
-        <Route path="/bookings" element={
-          <ProtectedRoute allowedRoles={["Backoffice", "StationOperator"]}>
-            <BookingPage />
-          </ProtectedRoute>
-        } />
+                {/*Shenori's Routes - starts at 115*/}
+                <Route path="/ev-owner-management" element={
+                  <ProtectedRoute allowedRoles={["Backoffice", "StationOperator"]}>
+                    <EVOwnerManagement />
+                  </ProtectedRoute>
+                } />
+                <Route path="/bookings" element={
+                  <ProtectedRoute allowedRoles={["Backoffice", "StationOperator"]}>
+                    <BookingPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/backoffice-dashboard" element={
+                  <ProtectedRoute allowedRoles={["Backoffice", "StationOperator"]}>
+                    <BackofficeDashboard />
+                  </ProtectedRoute>
+                } />
 
 
 
@@ -140,11 +145,9 @@ function App() {
 
 
 
-
-        {/*Public Routes - starts at 140*/}
-        <Route path="/login" element={<Login />} />
-
-
+                
+                {/*Public Routes - starts at 140*/}
+                <Route path="/login" element={<Login />} />
 
 
 
@@ -155,7 +158,9 @@ function App() {
 
 
 
-      </Routes>
+
+
+              </Routes>
     </Router>
   );
 }
