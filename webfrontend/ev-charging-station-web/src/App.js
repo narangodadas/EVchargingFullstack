@@ -65,8 +65,8 @@ import BackofficeDashboard from './Pages/Backoffice/BackOfficeDashboard';
 
 //Public Routes (Import here) 
 import Login from './Pages/Login';
-
-
+import Navbar from './Components/Layout/Navbar';
+import Home from './Pages/Home';
 
 
 
@@ -84,10 +84,9 @@ function App() {
 
   return (
     <Router>
-            <Navigation />
+      <Navbar />
               <Routes>
                 {/*Nipun's Routes - starts at 94*/}
-                <Route path="/" element={<Navigate to="/login" replace />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/create-station" element={<CreateStation />} />
                 <Route path="/edit-station/:id" element={<EditStation />} />
@@ -148,7 +147,7 @@ function App() {
                 
                 {/*Public Routes - starts at 140*/}
                 <Route path="/login" element={<Login />} />
-
+                <Route path="/" element={<Home />} />
 
 
 
