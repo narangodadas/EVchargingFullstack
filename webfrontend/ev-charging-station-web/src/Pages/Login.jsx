@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Power } from "lucide-react";
+import apiService from "../services/api";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,12 +18,8 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/api/auth/login`,
-        formData
-      );
-
-      const { token, role } = response.data;
+      const response = await apiService.login(formData);
+      const { token, role } = response;
 
       // Store JWT in localStorage
       localStorage.setItem("token", token);
@@ -33,17 +29,13 @@ const Login = () => {
       if (role === "Backoffice") {
         navigate("/backoffice-dashboard");
       } else if (role === "StationOperator") {
-        navigate("/dashboard");
+        navigate("/operator-dashboard");
       } else {
         setError("Unknown user role");
       }
     } catch (err) {
       console.error(err);
-      if (err.response) {
-        setError(err.response.data.message || "Login failed");
-      } else {
-        setError("Network error");
-      }
+      setError(err.message || "Login failed");
     }
   };
 

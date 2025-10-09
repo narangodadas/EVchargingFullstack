@@ -46,14 +46,14 @@ namespace EVChargingStationWeb.Server.Models
         [BsonElement("status")]
         public StationStatus Status { get; set; } = StationStatus.Active;
 
-        [BsonElement("operatorId")]
-        public string OperatorId { get; set; } // Station Operator responsible
-
         [BsonElement("createdAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [BsonElement("updatedAt")]
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+        [BsonElement("operatorId")]
+        public string? OperatorId { get; set; }
     }
 
     public class StationLocation
@@ -102,8 +102,6 @@ namespace EVChargingStationWeb.Server.Models
         public int TotalSlots { get; set; }
 
         public OperatingHours OperatingHours { get; set; }
-
-        public string OperatorId { get; set; }
     }
 
     public class UpdateStationRequest
@@ -114,6 +112,16 @@ namespace EVChargingStationWeb.Server.Models
         public int? TotalSlots { get; set; }
         public OperatingHours OperatingHours { get; set; }
         public StationStatus? Status { get; set; }
-        public string OperatorId { get; set; }
+    }
+
+    public class UpdateSlotsRequest
+    {
+        [Required]
+        [Range(0, int.MaxValue)]
+        public int OccupiedSlots { get; set; }
+
+        [Required]
+        [Range(0, int.MaxValue)]
+        public int AvailableSlots { get; set; }
     }
 }

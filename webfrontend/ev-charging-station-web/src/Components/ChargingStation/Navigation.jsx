@@ -1,15 +1,44 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Home, Plus, Settings, Power } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Home, Plus, Settings, Power, Users, Calendar, LogOut } from 'lucide-react';
 
 const Navigation = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const role = localStorage.getItem("role");
+  const token = localStorage.getItem("token");
 
-  const navItems = [
-    { path: '/dashboard', icon: Home, label: 'Dashboard' },
-    { path: '/create-station', icon: Plus, label: 'Create Station' },
-    { path: '/manage-stations', icon: Settings, label: 'Manage Stations' },
-  ];
+  // Don't show navigation on login page or if not authenticated
+  if (location.pathname === '/login' || !token) {
+    return null;
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    navigate("/login");
+  };
+
+  // Define navigation items based on role
+  const getNavItems = () => {
+    if (role === "Backoffice") {
+      return [
+        { path: '/backoffice-dashboard', icon: Home, label: 'Dashboard' },
+        { path: '/create-station', icon: Plus, label: 'Create Station' },
+        { path: '/manage-stations', icon: Settings, label: 'Manage Stations' },
+        { path: '/ev-owner-management', icon: Users, label: 'EV Owners' },
+        { path: '/bookings', icon: Calendar, label: 'Bookings' },
+      ];
+    } else if (role === "StationOperator") {
+      return [
+        { path: '/operator-dashboard', icon: Home, label: 'Dashboard' },
+        { path: '/bookings', icon: Calendar, label: 'Bookings' },
+      ];
+    }
+    return [];
+  };
+
+  const navItems = getNavItems();
 
   return (
     <nav className="bg-white shadow-lg">
@@ -24,7 +53,7 @@ const Navigation = () => {
             </div>
           </div>
           
-          <div className="flex space-x-8">
+          <div className="flex items-center space-x-8">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
@@ -44,6 +73,20 @@ const Navigation = () => {
                 </Link>
               );
             })}
+            
+            {/* User Role and Logout */}
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-600">
+                {role === "Backoffice" ? "Back Office" : "Station Operator"}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+              >
+                <LogOut className="h-4 w-4 mr-1" />
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       </div>

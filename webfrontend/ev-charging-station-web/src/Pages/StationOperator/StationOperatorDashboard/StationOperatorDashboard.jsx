@@ -1,35 +1,112 @@
-import React, { useState, useEffect } from 'react';
-import { RefreshCw, Zap, Power, MapPin, Clock, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { RefreshCw, Zap, Power, MapPin, Clock, AlertCircle, Calendar, Users, Eye } from 'lucide-react';
 import { useChargingStations } from '../../../hooks/useChargingStations';
+import { useBookings } from '../../../hooks/useBookings';
+import apiService from '../../../services/api';
 
-const StationOperatorDashboard = ({ operatorId = 'default-operator' }) => {
-  const { stations, loading, error, fetchStationsByOperator, updateAvailableSlots, setError } = useChargingStations();
+const StationOperatorDashboard = () => {
+  const { stations, loading, error, fetchStations, updateAvailableSlots, setError } = useChargingStations();
+  const { loading: bookingsLoading, error: bookingsError, getBookingStats } = useBookings();
   const [refreshing, setRefreshing] = useState(false);
   const [selectedStation, setSelectedStation] = useState(null);
+  const [showBookings, setShowBookings] = useState(false);
+  const [bookingStats, setBookingStats] = useState({});
+  const [allBookings, setAllBookings] = useState([]);
+  
+  // State for slot update modal
+  const [showSlotUpdateModal, setShowSlotUpdateModal] = useState(false);
+  const [slotUpdateStation, setSlotUpdateStation] = useState(null);
+  const [newOccupiedSlots, setNewOccupiedSlots] = useState(0);
+  const [isUpdatingSlots, setIsUpdatingSlots] = useState(false);
 
   useEffect(() => {
-    if (operatorId) {
-      fetchStationsByOperator(operatorId);
+    fetchStations();
+  }, [fetchStations]);
+
+  // Fetch all bookings for all stations
+  const fetchAllBookings = useCallback(async () => {
+    try {
+      const allBookingsData = await apiService.getAllBookings();
+      
+      // Add station names to bookings
+      const bookingsWithStationNames = allBookingsData.map(booking => {
+        const station = stations.find(s => s.id === booking.stationId);
+        return {
+          ...booking,
+          stationName: station ? station.name : 'Unknown Station'
+        };
+      });
+      
+      setAllBookings(bookingsWithStationNames);
+      
+      // Calculate booking stats
+      if (bookingsWithStationNames.length > 0) {
+        const stats = getBookingStats(bookingsWithStationNames);
+        setBookingStats(stats);
+      }
+    } catch (err) {
+      console.error('Failed to fetch bookings:', err);
+      // Set empty arrays to prevent errors
+      setAllBookings([]);
+      setBookingStats({});
     }
-  }, [operatorId, fetchStationsByOperator]);
+  }, [stations, getBookingStats]);
+
+  // Calculate booking stats when stations change
+  useEffect(() => {
+    if (stations.length > 0) {
+      fetchAllBookings();
+    }
+  }, [stations, fetchAllBookings]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
-      await fetchStationsByOperator(operatorId);
+      await fetchStations();
       setError(null);
     } catch (err) {
-      console.error('Failed to refresh stations:', err);
+      console.error('Failed to refresh data:', err);
     } finally {
       setRefreshing(false);
     }
   };
 
-  const handleUpdateSlots = async (stationId) => {
+  const handleUpdateSlots = (stationId) => {
+    const station = stations.find(s => s.id === stationId);
+    if (station) {
+      setSlotUpdateStation(station);
+      const currentOccupied = (station.totalSlots || 0) - (station.availableSlots || 0);
+      setNewOccupiedSlots(currentOccupied);
+      setShowSlotUpdateModal(true);
+    }
+  };
+
+  const handleSlotUpdate = async () => {
+    if (!slotUpdateStation) return;
+    
+    setIsUpdatingSlots(true);
     try {
-      await updateAvailableSlots(stationId);
+      // Calculate new available slots
+      const newAvailableSlots = (slotUpdateStation.totalSlots || 0) - newOccupiedSlots;
+      
+      // Call API to update the occupied slots
+      await apiService.updateStationSlots(slotUpdateStation.id, {
+        occupiedSlots: newOccupiedSlots,
+        availableSlots: newAvailableSlots
+      });
+      
+      // Refresh the station data
+      await fetchStations();
+      
+      // Close modal and reset state
+      setShowSlotUpdateModal(false);
+      setSlotUpdateStation(null);
+      setNewOccupiedSlots(0);
     } catch (err) {
       console.error('Failed to update slots:', err);
+      setError(err.message || 'Failed to update slots');
+    } finally {
+      setIsUpdatingSlots(false);
     }
   };
 
@@ -64,26 +141,74 @@ const StationOperatorDashboard = ({ operatorId = 'default-operator' }) => {
     }
   };
 
-  if (loading) {
+  // Format date and time
+  const formatDateTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
+  // Get booking status color
+  const getBookingStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'confirmed':
+        return 'bg-green-100 text-green-800';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800';
+      case 'completed':
+        return 'bg-blue-100 text-blue-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  // Get upcoming bookings for a specific station
+  const getStationBookings = (stationId) => {
+    return allBookings.filter(booking => booking.stationId === stationId);
+  };
+
+  if (loading || bookingsLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-gray-50 flex justify-center items-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">
+            {loading && bookingsLoading ? 'Loading stations and bookings...' :
+             loading ? 'Loading stations...' : 'Loading bookings...'}
+          </p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="space-y-4">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          <div className="flex justify-between items-center">
-            <span>{error}</span>
-            <button
-              onClick={handleRefresh}
-              className="text-red-700 hover:text-red-900"
-            >
-              <RefreshCw className="h-4 w-4" />
-            </button>
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="space-y-4">
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+              <div className="flex justify-between items-center">
+                <span>{error}</span>
+                <button
+                  onClick={handleRefresh}
+                  className="text-red-700 hover:text-red-900"
+                >
+                  <RefreshCw className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+            {bookingsError && (
+              <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+                <span>Bookings: {bookingsError}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -96,14 +221,19 @@ const StationOperatorDashboard = ({ operatorId = 'default-operator' }) => {
   const totalSlots = stations.reduce((sum, station) => sum + (station.totalSlots || 0), 0);
   const availableSlots = stations.reduce((sum, station) => sum + (station.availableSlots || 0), 0);
   const occupiedSlots = totalSlots - availableSlots;
+  
+  // Booking statistics
+  const todayBookings = bookingStats.today || 0;
+  const upcomingBookings = bookingStats.upcoming || 0;
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Station Operator Dashboard</h1>
-          <p className="text-gray-600">Monitor and manage your assigned charging stations</p>
+          <p className="text-gray-600">Monitor and manage all charging stations</p>
         </div>
         <button
           onClick={handleRefresh}
@@ -116,7 +246,7 @@ const StationOperatorDashboard = ({ operatorId = 'default-operator' }) => {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
         <div className="bg-white p-6 rounded-lg shadow">
           <div className="flex items-center">
             <div className="p-2 bg-blue-100 rounded-lg">
@@ -164,18 +294,102 @@ const StationOperatorDashboard = ({ operatorId = 'default-operator' }) => {
             </div>
           </div>
         </div>
+
+        <div className="bg-white p-6 rounded-lg shadow">
+          <div className="flex items-center">
+            <div className="p-2 bg-purple-100 rounded-lg">
+              <Calendar className="h-6 w-6 text-purple-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Today's Bookings</p>
+              <p className="text-2xl font-bold text-gray-900">{todayBookings}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow">
+          <div className="flex items-center">
+            <div className="p-2 bg-indigo-100 rounded-lg">
+              <Users className="h-6 w-6 text-indigo-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Upcoming Bookings</p>
+              <p className="text-2xl font-bold text-gray-900">{upcomingBookings}</p>
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* Upcoming Bookings Overview */}
+      {upcomingBookings > 0 && (
+        <div className="bg-white rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-medium text-gray-900">Upcoming Bookings (Next 7 Days)</h2>
+              <button
+                onClick={() => setShowBookings(!showBookings)}
+                className="text-sm text-blue-600 hover:text-blue-800"
+              >
+                {showBookings ? 'Hide' : 'View All'}
+              </button>
+            </div>
+          </div>
+          
+          {showBookings && (
+            <div className="p-6">
+              {bookingStats.upcomingBookings && bookingStats.upcomingBookings.length > 0 ? (
+                <div className="space-y-4">
+                  {bookingStats.upcomingBookings.slice(0, 5).map((booking) => (
+                    <div key={booking.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-4">
+                          <div className="flex-shrink-0">
+                            <Calendar className="h-5 w-5 text-gray-400" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              {booking.stationName || 'Station'}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {formatDateTime(booking.startTime)} - {formatDateTime(booking.endTime)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getBookingStatusColor(booking.status)}`}>
+                          {booking.status || 'Confirmed'}
+                        </span>
+                        <span className="text-sm text-gray-500">
+                          {booking.vehicleType || 'EV'}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  {bookingStats.upcomingBookings.length > 5 && (
+                    <p className="text-sm text-gray-500 text-center mt-4">
+                      And {bookingStats.upcomingBookings.length - 5} more bookings...
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-center py-4">No upcoming bookings</p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Station List */}
       <div className="bg-white rounded-lg shadow">
         <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-900">Your Stations</h2>
+          <h2 className="text-lg font-medium text-gray-900">All Charging Stations</h2>
         </div>
         
         {totalStations === 0 ? (
           <div className="text-center py-8">
             <Zap className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500">No stations assigned to this operator</p>
+            <p className="text-gray-500">No charging stations available</p>
           </div>
         ) : (
           <div className="overflow-hidden">
@@ -251,6 +465,32 @@ const StationOperatorDashboard = ({ operatorId = 'default-operator' }) => {
                       </div>
                     </div>
 
+                    {/* Upcoming Bookings for this station */}
+                    {(() => {
+                      const stationBookings = getStationBookings(station.id);
+                      const upcomingStationBookings = stationBookings.filter(booking => {
+                        const startTime = new Date(booking.startTime);
+                        const now = new Date();
+                        return booking.status !== 'Cancelled' && startTime > now;
+                      }).slice(0, 2);
+
+                      return upcomingStationBookings.length > 0 ? (
+                        <div className="bg-blue-50 p-3 rounded-lg mb-3">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium text-blue-900">Next Bookings</span>
+                            <Eye className="h-4 w-4 text-blue-600" />
+                          </div>
+                          <div className="space-y-1">
+                            {upcomingStationBookings.map((booking, index) => (
+                              <div key={booking.id || index} className="text-xs text-blue-800">
+                                {formatDateTime(booking.startTime)} ({booking.vehicleType || 'EV'})
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null;
+                    })()}
+
                     {/* Actions */}
                     <div className="flex space-x-2">
                       <button
@@ -319,6 +559,42 @@ const StationOperatorDashboard = ({ operatorId = 'default-operator' }) => {
                 <span className="font-medium">Station ID:</span>
                 <p className="text-xs text-gray-500 font-mono break-all">{selectedStation.id}</p>
               </div>
+              
+              {/* Show bookings for this specific station */}
+              {(() => {
+                const stationBookings = getStationBookings(selectedStation.id);
+                const upcomingStationBookings = stationBookings.filter(booking => {
+                  const startTime = new Date(booking.startTime);
+                  const now = new Date();
+                  return booking.status !== 'Cancelled' && startTime > now;
+                }).slice(0, 3);
+
+                return upcomingStationBookings.length > 0 ? (
+                  <div>
+                    <span className="font-medium">Upcoming Bookings:</span>
+                    <div className="mt-2 space-y-2">
+                      {upcomingStationBookings.map((booking, index) => (
+                        <div key={booking.id || index} className="bg-blue-50 p-2 rounded text-xs">
+                          <div className="flex justify-between">
+                            <span>{formatDateTime(booking.startTime)}</span>
+                            <span className={`px-2 py-1 rounded-full ${getBookingStatusColor(booking.status)}`}>
+                              {booking.status || 'Confirmed'}
+                            </span>
+                          </div>
+                          <div className="text-gray-600 mt-1">
+                            {booking.vehicleType || 'Electric Vehicle'}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <span className="font-medium">Upcoming Bookings:</span>
+                    <p className="text-gray-500 text-sm">No upcoming bookings</p>
+                  </div>
+                );
+              })()}
             </div>
 
             <div className="mt-6 flex space-x-3">
@@ -338,6 +614,111 @@ const StationOperatorDashboard = ({ operatorId = 'default-operator' }) => {
           </div>
         </div>
       )}
+
+      {/* Slot Update Modal */}
+      {showSlotUpdateModal && slotUpdateStation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Update Slot Availability</h3>
+              <button
+                onClick={() => setShowSlotUpdateModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-medium text-gray-900">{slotUpdateStation.name}</h4>
+                <p className="text-sm text-gray-600">{formatAddress(slotUpdateStation.location)}</p>
+              </div>
+              
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="grid grid-cols-2 gap-4 text-center mb-4">
+                  <div>
+                    <p className="text-sm text-gray-600">Total Slots</p>
+                    <p className="text-xl font-bold text-gray-900">{slotUpdateStation.totalSlots || 0}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Currently Available</p>
+                    <p className="text-xl font-bold text-green-600">{slotUpdateStation.availableSlots || 0}</p>
+                  </div>
+                </div>
+                
+                <div>
+                  <label htmlFor="occupiedSlots" className="block text-sm font-medium text-gray-700 mb-2">
+                    Occupied Slots
+                  </label>
+                  <input
+                    type="number"
+                    id="occupiedSlots"
+                    min="0"
+                    max={slotUpdateStation.totalSlots || 0}
+                    value={newOccupiedSlots}
+                    onChange={(e) => setNewOccupiedSlots(Math.max(0, Math.min(slotUpdateStation.totalSlots || 0, parseInt(e.target.value) || 0)))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Available slots will be: {(slotUpdateStation.totalSlots || 0) - newOccupiedSlots}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="bg-blue-50 p-3 rounded-lg">
+                <h5 className="font-medium text-blue-900 mb-2">Current Status:</h5>
+                <div className="text-sm space-y-1">
+                  <div className="flex justify-between">
+                    <span className="text-blue-700">Total Slots:</span>
+                    <span className="font-medium">{slotUpdateStation.totalSlots || 0}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-blue-700">Current Occupied:</span>
+                    <span className="font-medium">{(slotUpdateStation.totalSlots || 0) - (slotUpdateStation.availableSlots || 0)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-blue-700">Current Available:</span>
+                    <span className="font-medium">{slotUpdateStation.availableSlots || 0}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-green-50 p-3 rounded-lg">
+                <h5 className="font-medium text-green-900 mb-2">After Update:</h5>
+                <div className="text-sm space-y-1">
+                  <div className="flex justify-between">
+                    <span className="text-green-700">New Occupied:</span>
+                    <span className="font-medium">{newOccupiedSlots}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-green-700">New Available:</span>
+                    <span className="font-medium">{(slotUpdateStation.totalSlots || 0) - newOccupiedSlots}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 flex space-x-3">
+              <button
+                onClick={handleSlotUpdate}
+                disabled={isUpdatingSlots}
+                className="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isUpdatingSlots ? 'Updating...' : 'Update Slots'}
+              </button>
+              <button
+                onClick={() => setShowSlotUpdateModal(false)}
+                disabled={isUpdatingSlots}
+                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      </div>
     </div>
   );
 };

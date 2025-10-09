@@ -31,12 +31,7 @@ namespace EVChargingStationWeb.Server.Controllers
             return station != null ? Ok(station) : NotFound();
         }
 
-        [HttpGet("operator/{operatorId}")]
-        public async Task<IActionResult> GetByOperator(string operatorId)
-        {
-            var stations = await _stationService.GetByOperatorAsync(operatorId);
-            return Ok(stations);
-        }
+
 
         [HttpGet("nearby")]
         public async Task<IActionResult> GetNearby([FromQuery] double latitude, [FromQuery] double longitude, [FromQuery] double radius = 10)
@@ -101,10 +96,7 @@ namespace EVChargingStationWeb.Server.Controllers
                     request.Status = (StationStatus)statusElement.GetInt32();
                 }
 
-                if (root.TryGetProperty("operatorId", out var operatorElement))
-                {
-                    request.OperatorId = operatorElement.GetString();
-                }
+
 
                 if (root.TryGetProperty("location", out var locationElement))
                 {
@@ -234,6 +226,24 @@ namespace EVChargingStationWeb.Server.Controllers
             catch (KeyNotFoundException)
             {
                 return NotFound();
+            }
+        }
+
+        [HttpPatch("{id}/slots")]
+        public async Task<IActionResult> UpdateStationSlots(string id, [FromBody] UpdateSlotsRequest request)
+        {
+            try
+            {
+                await _stationService.UpdateStationSlotsAsync(id, request.OccupiedSlots, request.AvailableSlots);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
     }

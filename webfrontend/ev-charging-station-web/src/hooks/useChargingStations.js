@@ -6,7 +6,7 @@ export const useChargingStations = (filters = {}) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const fetchStations = async (status = null, type = null) => {
+    const fetchStations = useCallback(async (status = null, type = null) => {
         try {
             setLoading(true);
             const data = await apiService.getChargingStations(status, type);
@@ -14,11 +14,12 @@ export const useChargingStations = (filters = {}) => {
             setError(null);
         } catch (err) {
             setError(err.message || 'Failed to fetch charging stations');
-            console.error(err);
+            console.error('Error fetching stations:', err);
+            setStations([]); // Set empty array on error
         } finally {
             setLoading(false);
         }
-    };
+    }, []); // Empty dependency array since this function doesn't depend on any props or state
 
     const fetchStationById = useCallback(async (id) => {
         try {
@@ -30,23 +31,14 @@ export const useChargingStations = (filters = {}) => {
         }
     }, []);
 
-    const fetchStationsByOperator = async (operatorId) => {
-        try {
-            setLoading(true);
-            const data = await apiService.getChargingStationsByOperator(operatorId);
-            setStations(Array.isArray(data) ? data : []);
-            setError(null);
-        } catch (err) {
-            setError(err.message || 'Failed to fetch stations for operator');
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const fetchStationsByOperator = useCallback(async (operatorId) => {
+        // Since operators now see all stations, just call fetchStations
+        return await fetchStations();
+    }, [fetchStations]);
 
     useEffect(() => {
         fetchStations();
-    }, []);
+    }, [fetchStations]);
 
     const createStation = async (stationData) => {
         try {
