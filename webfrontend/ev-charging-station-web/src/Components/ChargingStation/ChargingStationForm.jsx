@@ -22,12 +22,9 @@ const ChargingStationForm = ({ station = null, onSubmit, onCancel }) => {
     operatingHours: {
       openTime: formatTime(station?.operatingHours?.openTime) || '00:00',
       closeTime: formatTime(station?.operatingHours?.closeTime) || '23:59',
-      isOpen24Hours: station?.operatingHours?.isOpen24Hours || false,
-    },
-    operatorId: station?.operatorId || '',
-  });
-
-  // Update form data when station prop changes
+        isOpen24Hours: station?.operatingHours?.isOpen24Hours || false,
+      },
+    });  // Update form data when station prop changes
   React.useEffect(() => {
     if (station) {
       console.log('Station data received in form:', station);
@@ -47,7 +44,6 @@ const ChargingStationForm = ({ station = null, onSubmit, onCancel }) => {
           closeTime: formatTime(station.operatingHours?.closeTime) || '23:59',
           isOpen24Hours: station.operatingHours?.isOpen24Hours || false,
         },
-        operatorId: station.operatorId || '',
       });
     }
   }, [station]);
@@ -130,7 +126,6 @@ const ChargingStationForm = ({ station = null, onSubmit, onCancel }) => {
           closeTime: `${formData.operatingHours.closeTime}:00`,
           isOpen24Hours: false,
         },
-        ...(formData.operatorId && formData.operatorId.trim() && { operatorId: formData.operatorId.trim() }),
       };
 
       console.log('Form submit data:', submitData);
@@ -243,20 +238,7 @@ const ChargingStationForm = ({ station = null, onSubmit, onCancel }) => {
             )}
           </div>
 
-          <div>
-            <label htmlFor="operatorId" className="block text-sm font-medium text-gray-700">
-              Operator ID (Optional)
-            </label>
-            <input
-              type="text"
-              id="operatorId"
-              name="operatorId"
-              value={formData.operatorId}
-              onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter operator ID"
-            />
-          </div>
+
         </div>
       </div>
 

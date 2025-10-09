@@ -1,3 +1,8 @@
+import React, { useEffect, useState } from 'react';
+import { Zap, Power, MapPin, Clock, Users, CreditCard, RefreshCw } from 'lucide-react';
+import axios from 'axios';
+import Sidebar from '../../Components/Layout/Sidebar';
+import ScheduleSummary from '../../Components/Schedule/ScheduleSummary';
 import React, { useEffect, useState } from "react";
 import {
   Zap,
@@ -39,6 +44,7 @@ const BackofficeDashboard = () => {
   const fetchStats = async () => {
     setLoading(true);
     try {
+      // Fetch all required data from your backend
       const [ownersRes, stationsRes] = await Promise.all([
         axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/evowners`),
         axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/ChargingStations`),
@@ -189,6 +195,57 @@ const BackofficeDashboard = () => {
           </ul>
         </div>
       </div>
+
+      {/* Schedule Summary */}
+      <ScheduleSummary />
+
+      {/* Quick Actions */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-medium text-gray-900">Quick Actions</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <a
+            href="/manage-stations"
+            className="block p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+          >
+            <div className="flex items-center">
+              <MapPin className="h-6 w-6 text-blue-600 mr-3" />
+              <div>
+                <h3 className="font-medium text-blue-900">Manage Stations</h3>
+                <p className="text-sm text-blue-700">Create and edit charging stations</p>
+              </div>
+            </div>
+          </a>
+          
+          <a
+            href="/schedule"
+            className="block p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+          >
+            <div className="flex items-center">
+              <Clock className="h-6 w-6 text-green-600 mr-3" />
+              <div>
+                <h3 className="font-medium text-green-900">Schedule Management</h3>
+                <p className="text-sm text-green-700">Manage schedules and maintenance</p>
+              </div>
+            </div>
+          </a>
+          
+          <a
+            href="/ev-owner-management"
+            className="block p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+          >
+            <div className="flex items-center">
+              <Users className="h-6 w-6 text-purple-600 mr-3" />
+              <div>
+                <h3 className="font-medium text-purple-900">EV Owners</h3>
+                <p className="text-sm text-purple-700">Manage EV owner accounts</p>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
     </div>
   );
 };

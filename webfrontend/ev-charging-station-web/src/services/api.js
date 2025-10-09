@@ -1,5 +1,5 @@
 // Determine API base URL based on environment
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5296/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5296';
 
 class ApiService {
     async request(endpoint, options = {}) {
@@ -56,30 +56,31 @@ class ApiService {
         if (type) params.append('type', type);
 
         const queryString = params.toString();
-        return this.request(`/chargingstations${queryString ? `?${queryString}` : ''}`);
+        return this.request(`/api/chargingstations${queryString ? `?${queryString}` : ''}`);
     }
 
     async getChargingStationById(id) {
-        return this.request(`/chargingstations/${id}`);
+        return this.request(`/api/chargingstations/${id}`);
     }
 
-    async getChargingStationsByOperator(operatorId) {
-        return this.request(`/chargingstations/operator/${operatorId}`);
-    }
+    // This method is no longer needed as operators see all stations
+    // async getChargingStationsByOperator(operatorId) {
+    //     return this.getChargingStations();
+    // }
 
     async getNearbyChargingStations(latitude, longitude, radius = 10) {
-        return this.request(`/chargingstations/nearby?latitude=${latitude}&longitude=${longitude}&radius=${radius}`);
+        return this.request(`/api/chargingstations/nearby?latitude=${latitude}&longitude=${longitude}&radius=${radius}`);
     }
 
     async createChargingStation(stationData) {
-        return this.request('/chargingstations', {
+        return this.request('/api/chargingstations', {
             method: 'POST',
             body: stationData,
         });
     }
 
     async updateChargingStation(id, stationData) {
-        await this.request(`/chargingstations/${id}`, {
+        await this.request(`/api/chargingstations/${id}`, {
             method: 'PUT',
             body: stationData,
         });
@@ -88,31 +89,74 @@ class ApiService {
     }
 
     async deactivateChargingStation(id) {
-        return this.request(`/chargingstations/${id}/deactivate`, {
+        return this.request(`/api/chargingstations/${id}/deactivate`, {
             method: 'PATCH',
         });
     }
 
     async activateChargingStation(id) {
-        return this.request(`/chargingstations/${id}/activate`, {
+        return this.request(`/api/chargingstations/${id}/activate`, {
             method: 'PATCH',
         });
     }
 
     async updateAvailableSlots(id) {
-        return this.request(`/chargingstations/${id}/update-slots`, {
+        return this.request(`/api/chargingstations/${id}/update-slots`, {
             method: 'PATCH',
         });
     }
 
-    // Booking API methods (if needed for checking active bookings)
+    async updateStationSlots(id, slotData) {
+        return this.request(`/api/chargingstations/${id}/slots`, {
+            method: 'PATCH',
+            body: slotData,
+        });
+    }
+
+    // Authentication API methods
+    async login(credentials) {
+        return this.request('/api/auth/login', {
+            method: 'POST',
+            body: credentials,
+        });
+    }
+
+    // Booking API methods
+    async getAllBookings() {
+        return this.request('/api/bookings');
+    }
+
     async getBookingsByStation(stationId) {
-        return this.request(`/booking/station/${stationId}`);
+        return this.request(`/api/bookings?stationId=${stationId}`);
     }
 
     async getActiveBookingsByStation(stationId) {
-        return this.request(`/booking/station/${stationId}/active`);
+        const bookings = await this.request(`/api/bookings?stationId=${stationId}`);
+        // Filter for active bookings (not cancelled and in the future)
+        const now = new Date();
+        return bookings.filter(booking =>
+            booking.status !== 'Cancelled' && new Date(booking.startTime) > now
+        );
     }
+
+    async getUpcomingBookingsByStation(stationId) {
+        const bookings = await this.request(`/api/bookings?stationId=${stationId}`);
+        const now = new Date();
+        const next24Hours = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+        return bookings.filter(booking => {
+            const startTime = new Date(booking.startTime);
+            return booking.status !== 'Cancelled' &&
+                startTime > now &&
+                startTime <= next24Hours;
+        }).sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+    }
+
+    // This method is no longer needed as operators see all stations
+    // async getBookingsByOperator(operatorId) {
+    //     // Operators now see all bookings through getAllBookings()
+    //     return this.getAllBookings();
+    // }
 }
 
 const apiService = new ApiService();

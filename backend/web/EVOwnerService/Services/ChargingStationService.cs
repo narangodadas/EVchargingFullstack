@@ -18,8 +18,7 @@ namespace EVChargingStationWeb.Server.Services
             // Create indexes
             var indexKeys = Builders<ChargingStation>.IndexKeys
                 .Ascending(s => s.Status)
-                .Ascending(s => s.Type)
-                .Ascending(s => s.OperatorId);
+                .Ascending(s => s.Type);
             _stations.Indexes.CreateOne(new CreateIndexModel<ChargingStation>(indexKeys));
         }
 
@@ -41,10 +40,7 @@ namespace EVChargingStationWeb.Server.Services
             return await _stations.Find(s => s.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<List<ChargingStation>> GetByOperatorAsync(string operatorId)
-        {
-            return await _stations.Find(s => s.OperatorId == operatorId).ToListAsync();
-        }
+
 
         public async Task<ChargingStation> CreateAsync(CreateStationRequest request)
         {
@@ -56,7 +52,6 @@ namespace EVChargingStationWeb.Server.Services
                 TotalSlots = request.TotalSlots,
                 AvailableSlots = request.TotalSlots, // Initially all slots are available
                 OperatingHours = request.OperatingHours,
-                OperatorId = request.OperatorId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -92,9 +87,6 @@ namespace EVChargingStationWeb.Server.Services
             
             if (request.Status.HasValue)
                 updates.Add(updateBuilder.Set(s => s.Status, request.Status.Value));
-            
-            if (!string.IsNullOrEmpty(request.OperatorId))
-                updates.Add(updateBuilder.Set(s => s.OperatorId, request.OperatorId));
 
             updates.Add(updateBuilder.Set(s => s.UpdatedAt, DateTime.UtcNow));
 
@@ -146,6 +138,30 @@ namespace EVChargingStationWeb.Server.Services
 
             var activeBookingsCount = await GetActiveBookingsCountAsync(stationId);
             var availableSlots = Math.Max(0, station.TotalSlots - activeBookingsCount);
+
+            await _stations.UpdateOneAsync(
+                s => s.Id == stationId,
+                Builders<ChargingStation>.Update
+                    .Set(s => s.AvailableSlots, availableSlots)
+                    .Set(s => s.UpdatedAt, DateTime.UtcNow));
+        }
+
+        public async Task UpdateStationSlotsAsync(string stationId, int occupiedSlots, int availableSlots)
+        {
+            var station = await GetByIdAsync(stationId);
+            if (station == null)
+                throw new KeyNotFoundException("Charging station not found");
+
+            // Validate that occupied + available = total
+            if (occupiedSlots + availableSlots != station.TotalSlots)
+                throw new ArgumentException($"Occupied slots ({occupiedSlots}) + Available slots ({availableSlots}) must equal total slots ({station.TotalSlots})");
+
+            // Validate ranges
+            if (occupiedSlots < 0 || occupiedSlots > station.TotalSlots)
+                throw new ArgumentException($"Occupied slots must be between 0 and {station.TotalSlots}");
+
+            if (availableSlots < 0 || availableSlots > station.TotalSlots)
+                throw new ArgumentException($"Available slots must be between 0 and {station.TotalSlots}");
 
             await _stations.UpdateOneAsync(
                 s => s.Id == stationId,
