@@ -67,7 +67,6 @@ import BackofficeDashboard from './Pages/Backoffice/BackOfficeDashboard';
 //Public Routes (Import here) 
 import Login from './Pages/Login';
 import Navbar from './Components/Layout/Navbar';
-import Home from './Pages/Home';
 
 
 
@@ -126,27 +125,6 @@ function App() {
           </ProtectedRoute>
         } />
 
-      <Navbar />
-              <Routes>
-                {/*Nipun's Routes - starts at 94*/}
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/create-station" element={<CreateStation />} />
-                <Route path="/edit-station/:id" element={<EditStation />} />
-                <Route path="/station/:id" element={<StationDetails />} />
-                <Route path="/manage-stations" element={<ManageStations />} />
-
-
-
-
-
-
-
-
-
-
-
-
-
         {/*Shenori's Routes - starts at 115*/}
         <Route path="/ev-owner-management" element={
           <ProtectedRoute allowedRoles={["Backoffice"]}>
@@ -188,21 +166,6 @@ function App() {
 
         {/*Public Routes - starts at 140*/}
         <Route path="/login" element={<Login />} />
-
-                
-                {/*Public Routes - starts at 140*/}
-                <Route path="/login" element={<Login />} />
-                <Route path="/" element={<Home />} />
-
-
-
-
-
-
-
-
-
-
 
       </Routes>
     </Router>

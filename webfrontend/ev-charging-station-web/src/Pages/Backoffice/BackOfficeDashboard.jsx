@@ -1,21 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Zap, Power, MapPin, Clock, Users, CreditCard, RefreshCw } from 'lucide-react';
+import { Zap, MapPin, Clock, Users, CreditCard, RefreshCw, BarChart2, TrendingUp } from 'lucide-react';
 import axios from 'axios';
 import Sidebar from '../../Components/Layout/Sidebar';
 import ScheduleSummary from '../../Components/Schedule/ScheduleSummary';
-import React, { useEffect, useState } from "react";
-import {
-  Zap,
-  Power,
-  Clock,
-  Users,
-  CreditCard,
-  RefreshCw,
-  BarChart2,
-  TrendingUp,
-} from "lucide-react";
-import axios from "axios";
-import Sidebar from "../../Components/Layout/Sidebar";
 import {
   LineChart,
   Line,
@@ -46,8 +33,8 @@ const BackofficeDashboard = () => {
     try {
       // Fetch all required data from your backend
       const [ownersRes, stationsRes] = await Promise.all([
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/evowners`),
-        axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/ChargingStations`),
+        axios.get(`${process.env.REACT_APP_API_URL}/api/evowners`),
+        axios.get(`${process.env.REACT_APP_API_URL}/api/ChargingStations`),
       ]);
 
       const owners = ownersRes.data || [];
@@ -245,7 +232,6 @@ const BackofficeDashboard = () => {
           </a>
         </div>
       </div>
-    </div>
     </div>
   );
 };
