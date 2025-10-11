@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Internet Permission -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Location Permissions for Maps -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- Camera Permission for QR Code -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application
+        android:allowBackup="true"
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="ChargeMate"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:targetApi="31">
+
+        <!-- Splash Screen (Launcher) -->
+        <activity
+            android:name=".activities.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Login Screen (next screen after splash) -->
+        <activity android:name=".activities.LoginActivity" />
+
+        <!-- Other Activities -->
+        <activity android:name=".MainActivity" />
+        <activity android:name=".activities.RegisterActivity" />
+        <activity android:name=".activities.DashboardActivity" />
+        <activity android:name=".activities.OperatorDashboardActivity" />
+        <activity android:name=".activities.BookingActivity" />
+        <activity android:name=".activities.QRScannerActivity" />
+        <activity android:name=".activities.MapsActivity" />
+        <activity android:name=".activities.ViewBookingsActivity" />
+        <activity android:name=".activities.BookingDetailsActivity" />
+        <activity android:name=".activities.EditBookingActivity" />
+        <activity android:name=".activities.QRDisplayActivity" />
+        <activity android:name=".activities.ProfileActivity" />
+
+        <!-- Google Maps API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBz_CdOiOZemHCVs2PiUq5FybnRq7oyaw0" />
+
+        <!-- Google Places API Key -->
+        <meta-data
+            android:name="com.google.android.libraries.places.API_KEY"
+            android:value="AIzaSyBz_CdOiOZemHCVs2PiUq5FybnRq7oyaw0" />
+
+    </application>
+</manifest>
