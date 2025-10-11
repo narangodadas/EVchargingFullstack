@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Sahan\\EVChargingAPI\\EVChargingAPI.csproj": {}
+    "C:\\Users\\Sahan\\Documents\\y4s1\\EAD project backend\\EVChargingSystem\\EVChargingAPI\\EVChargingAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Sahan\\EVChargingAPI\\EVChargingAPI.csproj": {
+    "C:\\Users\\Sahan\\Documents\\y4s1\\EAD project backend\\EVChargingSystem\\EVChargingAPI\\EVChargingAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Sahan\\EVChargingAPI\\EVChargingAPI.csproj",
+        "projectUniqueName": "C:\\Users\\Sahan\\Documents\\y4s1\\EAD project backend\\EVChargingSystem\\EVChargingAPI\\EVChargingAPI.csproj",
         "projectName": "EVChargingAPI",
-        "projectPath": "C:\\Users\\Sahan\\EVChargingAPI\\EVChargingAPI.csproj",
+        "projectPath": "C:\\Users\\Sahan\\Documents\\y4s1\\EAD project backend\\EVChargingSystem\\EVChargingAPI\\EVChargingAPI.csproj",
         "packagesPath": "C:\\Users\\Sahan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Sahan\\EVChargingAPI\\obj\\",
+        "outputPath": "C:\\Users\\Sahan\\Documents\\y4s1\\EAD project backend\\EVChargingSystem\\EVChargingAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Sahan\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -1,3 +1,8 @@
+/*******************************************************
+*file :         DashboardController.cs
+*Author:        IT22278180 - Narangoda D.A.S.
+********************************************************/
+
 using Microsoft.AspNetCore.Mvc;
 using EVChargingAPI.Services;
 using EVChargingAPI.Models;

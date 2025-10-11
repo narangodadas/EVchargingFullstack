@@ -1,3 +1,8 @@
+/*******************************************************
+*file :         Services/MongoDBService.cs
+*Author:        IT22278180 - Narangoda D.A.S. 
+********************************************************/
+
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using EVChargingAPI.Models;
@@ -14,9 +19,9 @@ namespace EVChargingAPI.Services
             _database = client.GetDatabase(settings.Value.DatabaseName);
         }
 
-        // Collections for each model
+        // Updated Collections - using ChargingStations instead of Stations
         public IMongoCollection<User> Users => _database.GetCollection<User>("users");
-        public IMongoCollection<Station> Stations => _database.GetCollection<Station>("stations");
+        public IMongoCollection<ChargingStation> ChargingStations => _database.GetCollection<ChargingStation>("chargingStations");
         public IMongoCollection<Booking> Bookings => _database.GetCollection<Booking>("bookings");
     }
 

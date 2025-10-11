@@ -1,3 +1,8 @@
+/*******************************************************
+*file :         BookingsController.cs
+*Author:        IT22278180 - Narangoda D.A.S.
+********************************************************/
+
 using Microsoft.AspNetCore.Mvc;
 using EVChargingAPI.Services;
 using EVChargingAPI.Models;
@@ -25,23 +30,24 @@ namespace EVChargingAPI.Controllers
             return Ok(bookings);
         }
 
-        // POST: api/bookings
-        [HttpPost]
-        public async Task<IActionResult> CreateBooking([FromBody] Booking booking)
-        {
-            // Check if booking is within 7 days
-            if (booking.StartTime > DateTime.UtcNow.AddDays(7))
-            {
-                return BadRequest(new { message = "Booking can only be made within 7 days" });
-            }
+       // POST: api/bookings
+[HttpPost]
+public async Task<IActionResult> CreateBooking([FromBody] Booking booking)
+{
+    // Check if booking is within 7 days
+    if (booking.StartTime > DateTime.UtcNow.AddDays(7))
+    {
+        return BadRequest(new { message = "Booking can only be made within 7 days" });
+    }
 
-            booking.CreatedAt = DateTime.UtcNow;
-            booking.UpdatedAt = DateTime.UtcNow;
-            booking.Status = "pending";
-            
-            await _mongoDBService.Bookings.InsertOneAsync(booking);
-            return Ok(new { message = "Booking created successfully", bookingId = booking.Id });
-        }
+    booking.CreatedAt = DateTime.UtcNow;
+    booking.UpdatedAt = DateTime.UtcNow;
+    booking.Status = "pending";
+    booking.IsCompleted = false; // Ensure it's false when creating
+    
+    await _mongoDBService.Bookings.InsertOneAsync(booking);
+    return Ok(new { message = "Booking created successfully", bookingId = booking.Id });
+}
 
         // PUT: api/bookings/{id}
         [HttpPut("{id}")]
@@ -93,10 +99,19 @@ public async Task<IActionResult> CompleteBooking(string id)
         return NotFound(new { message = "Booking not found" });
     }
 
-    var update = Builders<Booking>.Update.Set(b => b.Status, "completed");
+    // Update both status and isCompleted field
+    var update = Builders<Booking>.Update
+        .Set(b => b.Status, "completed")
+        .Set(b => b.IsCompleted, true) // SET TO TRUE WHEN COMPLETED
+        .Set(b => b.UpdatedAt, DateTime.UtcNow);
+    
     await _mongoDBService.Bookings.UpdateOneAsync(filter, update);
     
-    return Ok(new { message = "Booking completed successfully" });
+    return Ok(new { 
+        message = "Booking completed successfully",
+        bookingId = id,
+        isCompleted = true
+    });
 }
 
         // DELETE: api/bookings/{id}

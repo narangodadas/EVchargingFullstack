@@ -27,6 +27,15 @@ namespace EVChargingAPI.Models
         [BsonElement("operatingHours")]
         public string OperatingHours { get; set; } = "24/7";
 
+        [BsonElement("pricePerHour")]
+        public string PricePerHour { get; set; } = "₹20/hr";
+
+        [BsonElement("rating")]
+        public double Rating { get; set; } = 4.5;
+
+        [BsonElement("reviewsCount")]
+        public int ReviewsCount { get; set; } = 0;
+
         [BsonElement("isActive")]
         public bool IsActive { get; set; } = true;
 

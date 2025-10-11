@@ -1,4 +1,8 @@
-using System.Text.Json.Serialization; // Add this at the top
+/*******************************************************
+*file :         UsersController.cs
+*Author:        IT22149626 - Chandrasiri G.A.S.D.
+********************************************************/
+
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -10,23 +14,18 @@ namespace EVChargingAPI.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
 
-        [JsonPropertyName("nic")]
         [BsonElement("nic")]
         public string NIC { get; set; } = null!;
 
-        [JsonPropertyName("name")]
         [BsonElement("name")]
         public string Name { get; set; } = null!;
 
-        [JsonPropertyName("email")]
         [BsonElement("email")]
         public string Email { get; set; } = null!;
 
-        [JsonPropertyName("password")]
         [BsonElement("password")]
         public string Password { get; set; } = null!;
 
-        [JsonPropertyName("role")]
         [BsonElement("role")]
         public string Role { get; set; } = null!; // "evowner", "stationoperator", "backoffice"
 

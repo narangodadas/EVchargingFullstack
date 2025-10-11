@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lx3VHpLmbfxE/HDBB2hLpT3ZgfeUbzc1AWdfkmKOrhL++ad8oypmUFl3dwls9CK98CbyKX63zSPD3wl/uyH4Rw==",
+  "dgSpecHash": "7P+qH8DHqa/WYuLKbJ2MOFH9Q7bDUmh1ubsBVHw3cpv1Zaq41j9fQAbXvwKeGeasKH6DmqNDqGIQqX99EQMh2g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Sahan\\EVChargingAPI\\EVChargingAPI.csproj",
+  "projectFilePath": "C:\\Users\\Sahan\\Documents\\y4s1\\EAD project backend\\EVChargingSystem\\EVChargingAPI\\EVChargingAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Sahan\\.nuget\\packages\\dnsclient\\1.6.1\\dnsclient.1.6.1.nupkg.sha512",
     "C:\\Users\\Sahan\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.4\\microsoft.aspnetcore.openapi.7.0.4.nupkg.sha512",
