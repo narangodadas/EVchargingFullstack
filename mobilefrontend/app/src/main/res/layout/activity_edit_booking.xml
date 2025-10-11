@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="15dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Edit Booking"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/green"
+            android:gravity="center"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Station Name (Read-only) -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Station"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="5dp" />
+
+        <TextView
+            android:id="@+id/tvStationName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Loading station..."
+            android:background="@drawable/edittext_border"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginBottom="15dp" />
+
+        <!-- Vehicle Type -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vehicle Type"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="5dp" />
+
+        <EditText
+            android:id="@+id/etVehicleType"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="e.g., Tesla Model 3, Nissan Leaf"
+            android:background="@drawable/edittext_border"
+            android:padding="10dp"
+            android:layout_marginBottom="15dp" />
+
+        <!-- Booking Date -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Booking Date"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="5dp" />
+
+        <EditText
+            android:id="@+id/etBookingDate"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Select date"
+            android:focusable="false"
+            android:clickable="true"
+            android:background="@drawable/edittext_border"
+            android:padding="10dp"
+            android:layout_marginBottom="15dp" />
+
+        <!-- Start Time -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start Time"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="5dp" />
+
+        <EditText
+            android:id="@+id/etStartTime"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Select start time"
+            android:focusable="false"
+            android:clickable="true"
+            android:background="@drawable/edittext_border"
+            android:padding="10dp"
+            android:layout_marginBottom="15dp" />
+
+        <!-- End Time -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="End Time"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="5dp" />
+
+        <EditText
+            android:id="@+id/etEndTime"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Select end time"
+            android:focusable="false"
+            android:clickable="true"
+            android:background="@drawable/edittext_border"
+            android:padding="10dp"
+            android:layout_marginBottom="20dp" />
+
+
+
+        <!-- Update Booking Button -->
+        <Button
+            android:id="@+id/btnUpdateBooking"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Update Booking"
+            android:textSize="16sp"
+            android:backgroundTint="@color/green"
+            android:textColor="@color/white" />
+
+        <!-- Progress Bar -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="20dp" />
+
+    </LinearLayout>
+</ScrollView>

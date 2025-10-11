@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">ChargeMate</string>
+    <string name="google_maps_key">AIzaSyBz_CdOiOZemHCVs2PiUq5FybnRq7oyaw0</string>
+    <string name="back_button">Back button</string>
+    <string name="profile_icon">Profile icon</string>
+</resources>
