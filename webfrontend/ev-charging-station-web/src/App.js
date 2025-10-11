@@ -1,11 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './Components/ProtectedRoute';
-
-
-
-
-//Nipun's Routes (Import here)
 import Navigation from './Components/ChargingStation/Navigation';
 import StationOperatorDashboard from './Pages/StationOperator/StationOperatorDashboard/StationOperatorDashboard';
 import CreateStation from './Pages/Backoffice/ChargingStationManagement/CreateStation';
@@ -13,78 +8,19 @@ import EditStation from './Pages/Backoffice/ChargingStationManagement/EditStatio
 import StationDetails from './Pages/Backoffice/ChargingStationManagement/StationDetails';
 import ManageStations from './Pages/Backoffice/ChargingStationManagement/ManageStations';
 import ScheduleManagement from './Pages/Backoffice/ScheduleManagement/ScheduleManagement';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Shenori's Routes (Import here)
 import EVOwnerManagement from './Pages/Backoffice/EVOwnerManagement/EVOwnerManagement';
 import BookingPage from './Pages/Booking/BookingPage';
 import BackofficeDashboard from './Pages/Backoffice/BackOfficeDashboard';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Public Routes (Import here) 
 import Login from './Pages/Login';
 import Navbar from './Components/Layout/Navbar';
 import Home from './Pages/Home';
 
-
-
-
-
-
-
-
-
-
-
-
 function App() {
   return (
     <Router>
-      <Navigation />
+      <Navbar />
       <Routes>
+        <Route path="/" element={<Home />} />
         {/*Nipun's Routes - starts at 94*/}
         <Route path="/" element={
           localStorage.getItem("token") ? (
@@ -92,9 +28,10 @@ function App() {
               <Navigate to="/backoffice-dashboard" replace /> :
               <Navigate to="/operator-dashboard" replace />
           ) : (
-            <Navigate to="/login" replace />
+            <Navigate to="/" replace />
           )
         } />
+        
         <Route path="/operator-dashboard" element={
           <ProtectedRoute allowedRoles={["StationOperator"]}>
             <StationOperatorDashboard />
@@ -126,26 +63,11 @@ function App() {
           </ProtectedRoute>
         } />
 
-      <Navbar />
-              <Routes>
                 {/*Nipun's Routes - starts at 94*/}
-                <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/create-station" element={<CreateStation />} />
                 <Route path="/edit-station/:id" element={<EditStation />} />
                 <Route path="/station/:id" element={<StationDetails />} />
                 <Route path="/manage-stations" element={<ManageStations />} />
-
-
-
-
-
-
-
-
-
-
-
-
 
         {/*Shenori's Routes - starts at 115*/}
         <Route path="/ev-owner-management" element={
@@ -163,48 +85,11 @@ function App() {
             <BackofficeDashboard />
           </ProtectedRoute>
         } />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        {/*Public Routes - starts at 140*/}
-        <Route path="/login" element={<Login />} />
-
                 
                 {/*Public Routes - starts at 140*/}
                 <Route path="/login" element={<Login />} />
                 <Route path="/" element={<Home />} />
-
-
-
-
-
-
-
-
-
-
-
-      </Routes>
+        </Routes>
     </Router>
   );
 }

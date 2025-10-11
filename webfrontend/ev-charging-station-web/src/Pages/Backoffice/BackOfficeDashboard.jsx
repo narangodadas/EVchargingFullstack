@@ -3,19 +3,10 @@ import { Zap, Power, MapPin, Clock, Users, CreditCard, RefreshCw } from 'lucide-
 import axios from 'axios';
 import Sidebar from '../../Components/Layout/Sidebar';
 import ScheduleSummary from '../../Components/Schedule/ScheduleSummary';
-import React, { useEffect, useState } from "react";
 import {
-  Zap,
-  Power,
-  Clock,
-  Users,
-  CreditCard,
-  RefreshCw,
   BarChart2,
   TrendingUp,
 } from "lucide-react";
-import axios from "axios";
-import Sidebar from "../../Components/Layout/Sidebar";
 import {
   LineChart,
   Line,
@@ -194,7 +185,7 @@ const BackofficeDashboard = () => {
             <li>👥 EV owner registrations are increasing, plan for additional charging slots next quarter.</li>
           </ul>
         </div>
-      </div>
+      
 
       {/* Schedule Summary */}
       <ScheduleSummary />
@@ -245,7 +236,7 @@ const BackofficeDashboard = () => {
           </a>
         </div>
       </div>
-    </div>
+      </div>
     </div>
   );
 };
