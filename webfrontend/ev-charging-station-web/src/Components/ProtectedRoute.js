@@ -6,8 +6,16 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
   if (!token) return <Navigate to="/login" />;
 
-  if (allowedRoles && !allowedRoles.includes(role))
-    return <Navigate to="/login" />;
+  if (allowedRoles && !allowedRoles.includes(role)) {
+    // Redirect to appropriate dashboard based on role
+    if (role === "Backoffice") {
+      return <Navigate to="/backoffice-dashboard" />;
+    } else if (role === "StationOperator") {
+      return <Navigate to="/operator-dashboard" />;
+    } else {
+      return <Navigate to="/login" />;
+    }
+  }
 
   return children;
 };

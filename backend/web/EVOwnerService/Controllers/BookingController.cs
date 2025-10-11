@@ -1,5 +1,6 @@
 using EVChargingStationWeb.Server.Models;
 using EVChargingStationWeb.Server.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ namespace EVChargingStationWeb.Server.Controllers
 {
     [ApiController]
     [Route("api/bookings")]
+    [Authorize(Roles = "Backoffice,StationOperator")]
     public class BookingsController : ControllerBase
     {
         private readonly BookingService _service;
@@ -15,6 +17,7 @@ namespace EVChargingStationWeb.Server.Controllers
 
         // POST: create booking
         [HttpPost]
+        [Authorize(Roles = "Backoffice")]
         public async Task<IActionResult> Create([FromBody] Booking booking)
         {
             try
@@ -46,6 +49,7 @@ namespace EVChargingStationWeb.Server.Controllers
 
         // PUT: update booking
         [HttpPut("{id}")]
+        [Authorize(Roles = "Backoffice")]
         public async Task<IActionResult> Update(string id, [FromBody] Booking booking)
         {
             try
@@ -61,6 +65,7 @@ namespace EVChargingStationWeb.Server.Controllers
 
         // PATCH: cancel booking
         [HttpPatch("{id}/cancel")]
+        [Authorize(Roles = "Backoffice")]
         public async Task<IActionResult> Cancel(string id)
         {
             try

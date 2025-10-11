@@ -4,8 +4,32 @@ using Microsoft.Extensions.Configuration; // for IConfiguration
 using System.Threading.Tasks;              // for async Task
 using System.Collections.Generic;
 using EVChargingStationWeb.Server.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var key = Encoding.ASCII.GetBytes("7d66e76f-12d8-4947-8d1a-da7cf47905c4"); // Keep secret safe in production
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
+
+builder.Services.AddAuthorization();
 
 // Configure MongoDB
 builder.Services.Configure<MongoDbSettings>(
@@ -23,30 +47,7 @@ builder.Services.AddSingleton<EVOwnerService>();
 // after registering IMongoClient and MongoDbSettings
 builder.Services.AddSingleton<BookingService>();
 
-// existing AddControllers(), AddCors(), etc.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+builder.Services.AddSingleton<ChargingStationService>();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -80,6 +81,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
