@@ -1,7 +1,7 @@
 using EVChargingAPI.Services;
 using EVChargingAPI.Models;
+using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
-using Microsoft.Extensions.Options; // Add this line
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,18 +14,28 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<MongoDBSettings>(
     builder.Configuration.GetSection("MongoDBSettings"));
 
-builder.Services.AddSingleton<MongoDBService>();
-
-// Add MongoDB Database Connection
-builder.Services.AddSingleton<IMongoDatabase>(provider =>
+// Register MongoDB services
+builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
 {
-    var settings = provider.GetRequiredService<IOptions<MongoDBSettings>>().Value;
-    var client = new MongoClient(settings.ConnectionString);
-    return client.GetDatabase(settings.DatabaseName);
+    var settings = serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<MongoDBSettings>>().Value;
+    return new MongoClient(settings.ConnectionString);
 });
 
-// Use different ports
-builder.WebHost.UseUrls("http://localhost:5001", "https://localhost:7001");
+builder.Services.AddSingleton<MongoDBService>();
+builder.Services.AddSingleton<ChargingStationService>();
+
+// Allow external access on port 7000 (HTTP only)
+builder.WebHost.UseUrls("http://localhost:7000", "http://0.0.0.0:7000");
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -36,7 +46,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// REMOVE THIS LINE: app.UseHttpsRedirection();  // <-- Comment out or delete to avoid HTTPS force
+
+app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
 

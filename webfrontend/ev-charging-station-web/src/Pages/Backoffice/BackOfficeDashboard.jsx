@@ -4,6 +4,10 @@ import axios from 'axios';
 import Sidebar from '../../Components/Layout/Sidebar';
 import ScheduleSummary from '../../Components/Schedule/ScheduleSummary';
 import {
+  BarChart2,
+  TrendingUp,
+} from "lucide-react";
+import {
   LineChart,
   Line,
   BarChart,
@@ -181,7 +185,7 @@ const BackofficeDashboard = () => {
             <li>👥 EV owner registrations are increasing, plan for additional charging slots next quarter.</li>
           </ul>
         </div>
-      </div>
+      
 
       {/* Schedule Summary */}
       <ScheduleSummary />
@@ -231,6 +235,7 @@ const BackofficeDashboard = () => {
             </div>
           </a>
         </div>
+      </div>
       </div>
     </div>
   );
