@@ -13,7 +13,6 @@ import BookingPage from './Pages/Booking/BookingPage';
 import BackofficeDashboard from './Pages/Backoffice/BackOfficeDashboard';
 import Login from './Pages/Login';
 import Navbar from './Components/Layout/Navbar';
-import Home from './Pages/Home';
 
 function App() {
   return (
@@ -85,6 +84,11 @@ function App() {
             <BackofficeDashboard />
           </ProtectedRoute>
         } />
+
+        {/*Public Routes - starts at 140*/}
+        <Route path="/login" element={<Login />} />
+
+      </Routes>
                 
                 {/*Public Routes - starts at 140*/}
                 <Route path="/login" element={<Login />} />

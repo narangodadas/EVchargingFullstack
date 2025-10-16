@@ -167,283 +167,401 @@ const ChargingStationForm = ({ station = null, onSubmit, onCancel }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {errors.submit && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-          {errors.submit}
-        </div>
-      )}
-
-      {/* Basic Information */}
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
-        
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Station Name *
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              maxLength="100"
-              className={`mt-1 block w-full border rounded-md px-3 py-2 ${
-                errors.name ? 'border-red-500' : 'border-gray-300'
-              } focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              placeholder="Enter station name"
-            />
-            {errors.name && (
-              <p className="mt-1 text-sm text-red-600">{errors.name}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="type" className="block text-sm font-medium text-gray-700">
-              Charging Type *
-            </label>
-            <select
-              id="type"
-              name="type"
-              value={formData.type}
-              onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value={0}>AC (Alternating Current)</option>
-              <option value={1}>DC (Direct Current)</option>
-            </select>
-          </div>
-
-          <div>
-            <label htmlFor="totalSlots" className="block text-sm font-medium text-gray-700">
-              Total Slots *
-            </label>
-            <input
-              type="number"
-              id="totalSlots"
-              name="totalSlots"
-              value={formData.totalSlots}
-              onChange={handleChange}
-              min="1"
-              max="50"
-              className={`mt-1 block w-full border rounded-md px-3 py-2 ${
-                errors.totalSlots ? 'border-red-500' : 'border-gray-300'
-              } focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              placeholder="Enter number of total slots"
-            />
-            {errors.totalSlots && (
-              <p className="mt-1 text-sm text-red-600">{errors.totalSlots}</p>
-            )}
-          </div>
-
-
-        </div>
-      </div>
-
-      {/* Location Information */}
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-          <MapPin className="h-5 w-5 mr-2" />
-          Location Information
-        </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="md:col-span-2">
-            <label htmlFor="location.address" className="block text-sm font-medium text-gray-700">
-              Address *
-            </label>
-            <input
-              type="text"
-              id="location.address"
-              name="location.address"
-              value={formData.location.address}
-              onChange={handleChange}
-              className={`mt-1 block w-full border rounded-md px-3 py-2 ${
-                errors.address ? 'border-red-500' : 'border-gray-300'
-              } focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              placeholder="Enter full address"
-            />
-            {errors.address && (
-              <p className="mt-1 text-sm text-red-600">{errors.address}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="location.city" className="block text-sm font-medium text-gray-700">
-              City *
-            </label>
-            <input
-              type="text"
-              id="location.city"
-              name="location.city"
-              value={formData.location.city}
-              onChange={handleChange}
-              className={`mt-1 block w-full border rounded-md px-3 py-2 ${
-                errors.city ? 'border-red-500' : 'border-gray-300'
-              } focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              placeholder="Enter city"
-            />
-            {errors.city && (
-              <p className="mt-1 text-sm text-red-600">{errors.city}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="location.district" className="block text-sm font-medium text-gray-700">
-              District *
-            </label>
-            <input
-              type="text"
-              id="location.district"
-              name="location.district"
-              value={formData.location.district}
-              onChange={handleChange}
-              className={`mt-1 block w-full border rounded-md px-3 py-2 ${
-                errors.district ? 'border-red-500' : 'border-gray-300'
-              } focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              placeholder="Enter district"
-            />
-            {errors.district && (
-              <p className="mt-1 text-sm text-red-600">{errors.district}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="location.latitude" className="block text-sm font-medium text-gray-700">
-              Latitude (Optional)
-            </label>
-            <input
-              type="number"
-              id="location.latitude"
-              name="location.latitude"
-              value={formData.location.latitude}
-              onChange={handleChange}
-              step="any"
-              min="-90"
-              max="90"
-              className={`mt-1 block w-full border rounded-md px-3 py-2 ${
-                errors.latitude ? 'border-red-500' : 'border-gray-300'
-              } focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              placeholder="e.g., 6.9271"
-            />
-            {errors.latitude && (
-              <p className="mt-1 text-sm text-red-600">{errors.latitude}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="location.longitude" className="block text-sm font-medium text-gray-700">
-              Longitude (Optional)
-            </label>
-            <input
-              type="number"
-              id="location.longitude"
-              name="location.longitude"
-              value={formData.location.longitude}
-              onChange={handleChange}
-              step="any"
-              min="-180"
-              max="180"
-              className={`mt-1 block w-full border rounded-md px-3 py-2 ${
-                errors.longitude ? 'border-red-500' : 'border-gray-300'
-              } focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              placeholder="e.g., 79.8612"
-            />
-            {errors.longitude && (
-              <p className="mt-1 text-sm text-red-600">{errors.longitude}</p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Operating Hours */}
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-          <Clock className="h-5 w-5 mr-2" />
-          Operating Hours
-        </h3>
-        
-        <div className="space-y-4">
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="operatingHours.isOpen24Hours"
-              name="operatingHours.isOpen24Hours"
-              checked={formData.operatingHours.isOpen24Hours}
-              onChange={handleChange}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label htmlFor="operatingHours.isOpen24Hours" className="ml-2 block text-sm text-gray-900">
-              Open 24 Hours
-            </label>
-          </div>
-
-          {!formData.operatingHours.isOpen24Hours && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="operatingHours.openTime" className="block text-sm font-medium text-gray-700">
-                  Open Time *
-                </label>
-                <input
-                  type="time"
-                  id="operatingHours.openTime"
-                  name="operatingHours.openTime"
-                  value={formData.operatingHours.openTime}
-                  onChange={handleChange}
-                  className={`mt-1 block w-full border rounded-md px-3 py-2 ${
-                    errors.openTime ? 'border-red-500' : 'border-gray-300'
-                  } focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                />
-                {errors.openTime && (
-                  <p className="mt-1 text-sm text-red-600">{errors.openTime}</p>
-                )}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-100">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
+            <h2 className="text-3xl font-bold text-white flex items-center">
+              <div className="bg-white/20 p-2 rounded-lg mr-4">
+                <MapPin className="h-6 w-6 text-white" />
               </div>
+              {station ? 'Edit Charging Station' : 'Create New Charging Station'}
+            </h2>
+            <p className="text-blue-100 mt-2">
+              {station ? 'Update station information and settings' : 'Fill in the details to add a new charging station'}
+            </p>
+          </div>
 
-              <div>
-                <label htmlFor="operatingHours.closeTime" className="block text-sm font-medium text-gray-700">
-                  Close Time *
-                </label>
-                <input
-                  type="time"
-                  id="operatingHours.closeTime"
-                  name="operatingHours.closeTime"
-                  value={formData.operatingHours.closeTime}
-                  onChange={handleChange}
-                  className={`mt-1 block w-full border rounded-md px-3 py-2 ${
-                    errors.closeTime ? 'border-red-500' : 'border-gray-300'
-                  } focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                />
-                {errors.closeTime && (
-                  <p className="mt-1 text-sm text-red-600">{errors.closeTime}</p>
+          <form onSubmit={handleSubmit} className="p-8 space-y-8">
+            {errors.submit && (
+              <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg shadow-sm">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <X className="h-5 w-5 text-red-400" />
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-red-700 font-medium">{errors.submit}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Basic Information */}
+            <div className="bg-gradient-to-r from-gray-50 to-blue-50 border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+              <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                <div className="bg-blue-500 p-2 rounded-lg mr-3">
+                  <Save className="h-5 w-5 text-white" />
+                </div>
+                Basic Information
+              </h3>
+        
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="lg:col-span-2">
+                  <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Station Name *
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      maxLength="100"
+                      className={`w-full border-2 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 transition-all duration-200 ${
+                        errors.name 
+                          ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-4 focus:ring-red-100' 
+                          : 'border-gray-200 bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100'
+                      } focus:outline-none`}
+                      placeholder="Enter a unique station name"
+                    />
+                  </div>
+                  {errors.name && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center">
+                      <X className="h-4 w-4 mr-1" />
+                      {errors.name}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="type" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Charging Type *
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="type"
+                      name="type"
+                      value={formData.type}
+                      onChange={handleChange}
+                      className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-gray-900 bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100 focus:outline-none transition-all duration-200 cursor-pointer"
+                    >
+                      <option value={0}>⚡ AC (Alternating Current)</option>
+                      <option value={1}>🔋 DC (Direct Current)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="totalSlots" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Total Slots *
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      id="totalSlots"
+                      name="totalSlots"
+                      value={formData.totalSlots}
+                      onChange={handleChange}
+                      min="1"
+                      max="50"
+                      className={`w-full border-2 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 transition-all duration-200 ${
+                        errors.totalSlots 
+                          ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-4 focus:ring-red-100' 
+                          : 'border-gray-200 bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100'
+                      } focus:outline-none`}
+                      placeholder="Number of charging slots"
+                    />
+                  </div>
+                  {errors.totalSlots && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center">
+                      <X className="h-4 w-4 mr-1" />
+                      {errors.totalSlots}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Location Information */}
+            <div className="bg-gradient-to-r from-green-50 to-teal-50 border border-green-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+              <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                <div className="bg-green-500 p-2 rounded-lg mr-3">
+                  <MapPin className="h-5 w-5 text-white" />
+                </div>
+                Location Information
+              </h3>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="lg:col-span-2">
+                  <label htmlFor="location.address" className="block text-sm font-semibold text-gray-700 mb-2">
+                    🏠 Address *
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="location.address"
+                      name="location.address"
+                      value={formData.location.address}
+                      onChange={handleChange}
+                      className={`w-full border-2 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 transition-all duration-200 ${
+                        errors.address 
+                          ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-4 focus:ring-red-100' 
+                          : 'border-gray-200 bg-white focus:border-green-500 focus:ring-4 focus:ring-green-100'
+                      } focus:outline-none`}
+                      placeholder="Enter complete street address"
+                    />
+                  </div>
+                  {errors.address && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center">
+                      <X className="h-4 w-4 mr-1" />
+                      {errors.address}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="location.city" className="block text-sm font-semibold text-gray-700 mb-2">
+                    🏙️ City *
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="location.city"
+                      name="location.city"
+                      value={formData.location.city}
+                      onChange={handleChange}
+                      className={`w-full border-2 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 transition-all duration-200 ${
+                        errors.city 
+                          ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-4 focus:ring-red-100' 
+                          : 'border-gray-200 bg-white focus:border-green-500 focus:ring-4 focus:ring-green-100'
+                      } focus:outline-none`}
+                      placeholder="City name"
+                    />
+                  </div>
+                  {errors.city && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center">
+                      <X className="h-4 w-4 mr-1" />
+                      {errors.city}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="location.district" className="block text-sm font-semibold text-gray-700 mb-2">
+                    📍 District *
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="location.district"
+                      name="location.district"
+                      value={formData.location.district}
+                      onChange={handleChange}
+                      className={`w-full border-2 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 transition-all duration-200 ${
+                        errors.district 
+                          ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-4 focus:ring-red-100' 
+                          : 'border-gray-200 bg-white focus:border-green-500 focus:ring-4 focus:ring-green-100'
+                      } focus:outline-none`}
+                      placeholder="District name"
+                    />
+                  </div>
+                  {errors.district && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center">
+                      <X className="h-4 w-4 mr-1" />
+                      {errors.district}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="location.latitude" className="block text-sm font-semibold text-gray-700 mb-2">
+                    🌐 Latitude <span className="text-gray-500 font-normal">(Optional)</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      id="location.latitude"
+                      name="location.latitude"
+                      value={formData.location.latitude}
+                      onChange={handleChange}
+                      step="any"
+                      min="-90"
+                      max="90"
+                      className={`w-full border-2 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 transition-all duration-200 ${
+                        errors.latitude 
+                          ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-4 focus:ring-red-100' 
+                          : 'border-gray-200 bg-white focus:border-green-500 focus:ring-4 focus:ring-green-100'
+                      } focus:outline-none`}
+                      placeholder="e.g., 6.9271"
+                    />
+                  </div>
+                  {errors.latitude && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center">
+                      <X className="h-4 w-4 mr-1" />
+                      {errors.latitude}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="location.longitude" className="block text-sm font-semibold text-gray-700 mb-2">
+                    🌍 Longitude <span className="text-gray-500 font-normal">(Optional)</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      id="location.longitude"
+                      name="location.longitude"
+                      value={formData.location.longitude}
+                      onChange={handleChange}
+                      step="any"
+                      min="-180"
+                      max="180"
+                      className={`w-full border-2 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 transition-all duration-200 ${
+                        errors.longitude 
+                          ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-4 focus:ring-red-100' 
+                          : 'border-gray-200 bg-white focus:border-green-500 focus:ring-4 focus:ring-green-100'
+                      } focus:outline-none`}
+                      placeholder="e.g., 79.8612"
+                    />
+                  </div>
+                  {errors.longitude && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center">
+                      <X className="h-4 w-4 mr-1" />
+                      {errors.longitude}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Operating Hours */}
+            <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+              <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                <div className="bg-purple-500 p-2 rounded-lg mr-3">
+                  <Clock className="h-5 w-5 text-white" />
+                </div>
+                Operating Hours
+              </h3>
+              
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg p-4 border-2 border-dashed border-purple-200">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="operatingHours.isOpen24Hours"
+                      name="operatingHours.isOpen24Hours"
+                      checked={formData.operatingHours.isOpen24Hours}
+                      onChange={handleChange}
+                      className="h-5 w-5 text-purple-600 focus:ring-purple-500 border-gray-300 rounded transition-all duration-200"
+                    />
+                    <label htmlFor="operatingHours.isOpen24Hours" className="ml-3 block text-base font-medium text-gray-900">
+                      🕐 Open 24 Hours
+                    </label>
+                  </div>
+                  <p className="ml-8 text-sm text-gray-600 mt-1">
+                    Check this if the station operates round the clock
+                  </p>
+                </div>
+
+                {!formData.operatingHours.isOpen24Hours && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                      <label htmlFor="operatingHours.openTime" className="block text-sm font-semibold text-gray-700 mb-2">
+                        🌅 Open Time *
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="time"
+                          id="operatingHours.openTime"
+                          name="operatingHours.openTime"
+                          value={formData.operatingHours.openTime}
+                          onChange={handleChange}
+                          className={`w-full border-2 rounded-xl px-4 py-3 text-gray-900 transition-all duration-200 ${
+                            errors.openTime 
+                              ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-4 focus:ring-red-100' 
+                              : 'border-gray-200 bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-100'
+                          } focus:outline-none`}
+                        />
+                      </div>
+                      {errors.openTime && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center">
+                          <X className="h-4 w-4 mr-1" />
+                          {errors.openTime}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label htmlFor="operatingHours.closeTime" className="block text-sm font-semibold text-gray-700 mb-2">
+                        🌙 Close Time *
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="time"
+                          id="operatingHours.closeTime"
+                          name="operatingHours.closeTime"
+                          value={formData.operatingHours.closeTime}
+                          onChange={handleChange}
+                          className={`w-full border-2 rounded-xl px-4 py-3 text-gray-900 transition-all duration-200 ${
+                            errors.closeTime 
+                              ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-4 focus:ring-red-100' 
+                              : 'border-gray-200 bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-100'
+                          } focus:outline-none`}
+                        />
+                      </div>
+                      {errors.closeTime && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center">
+                          <X className="h-4 w-4 mr-1" />
+                          {errors.closeTime}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
-          )}
+
+            {/* Action Buttons */}
+            <div className="bg-gray-50 rounded-xl p-6 border-t border-gray-200">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-4 rounded-xl hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:transform-none"
+                >
+                  <Save className="h-5 w-5 mr-3" />
+                  {loading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Saving...
+                    </>
+                  ) : (
+                    station ? '✨ Update Station' : '🚀 Create Station'
+                  )}
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={onCancel}
+                  className="flex-1 bg-gradient-to-r from-gray-400 to-gray-500 text-white px-6 py-4 rounded-xl hover:from-gray-500 hover:to-gray-600 flex items-center justify-center font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+                >
+                  <X className="h-5 w-5 mr-3" />
+                  Cancel
+                </button>
+              </div>
+              
+              {/* Progress indicator */}
+              <div className="mt-4 text-center text-sm text-gray-500">
+                <p>Make sure all required fields (*) are filled before submitting</p>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
-
-      <div className="flex space-x-4">
-        <button
-          type="submit"
-          disabled={loading}
-          className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center"
-        >
-          <Save className="h-4 w-4 mr-2" />
-          {loading ? 'Saving...' : station ? 'Update Station' : 'Create Station'}
-        </button>
-        
-        <button
-          type="button"
-          onClick={onCancel}
-          className="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 flex items-center justify-center"
-        >
-          <X className="h-4 w-4 mr-2" />
-          Cancel
-        </button>
-      </div>
-    </form>
+    </div>
   );
 };
 
