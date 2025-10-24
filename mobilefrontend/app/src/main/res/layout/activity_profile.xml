@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:minHeight="48dp"
+                android:minWidth="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="12dp"
+                android:contentDescription="@string/back_button"
+                android:src="@drawable/ic_arrow_back"
+                app:tint="@color/black" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Profile"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <View
+                android:layout_width="48dp"
+                android:layout_height="48dp" />
+
+        </LinearLayout>
+
+        <!-- Profile Icon -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginBottom="32dp">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:minHeight="48dp"
+                android:minWidth="48dp"
+                android:src="@drawable/ic_profile"
+                android:background="@drawable/circle_background"
+                android:padding="20dp"
+                android:contentDescription="@string/profile_icon"
+                app:tint="@color/green" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Update Your Profile"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp" />
+
+        </LinearLayout>
+
+        <!-- NIC Field -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="NIC"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/etNic"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/edit_text_background"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:inputType="text"
+                android:maxLines="1"
+                android:enabled="false"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint_color" />
+
+        </LinearLayout>
+
+        <!-- Name Field -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Full Name"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/etName"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/edit_text_background"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:hint="Enter your full name"
+                android:inputType="textPersonName"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint_color" />
+
+        </LinearLayout>
+
+        <!-- Email Field -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Email Address"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/edit_text_background"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:hint="Enter your email"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint_color" />
+
+        </LinearLayout>
+
+        <!-- Password Field -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="New Password"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/edit_text_background"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:hint="Leave empty to keep current password"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint_color" />
+
+        </LinearLayout>
+
+        <!-- Confirm Password Field -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="32dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Confirm New Password"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/etConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/edit_text_background"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:hint="Confirm your new password"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textColorHint="@color/hint_color" />
+
+        </LinearLayout>
+
+        <!-- Update Button -->
+        <Button
+            android:id="@+id/btnUpdate"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:minHeight="48dp"
+            android:background="@drawable/button_primary"
+            android:text="Update Profile"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Logout Button -->
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:minHeight="48dp"
+            android:background="@drawable/button_secondary"
+            android:text="Logout"
+            android:textColor="@color/red"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</ScrollView>
